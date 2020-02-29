@@ -1,13 +1,12 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper";
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Cover from "./components/cover/Cover";
 
 function App() {
   return (
     <div>
-      <Paper>
-        <Cover />
-      </Paper>
+      <CssBaseline />
+      <Cover />
     </div>
   );
 }

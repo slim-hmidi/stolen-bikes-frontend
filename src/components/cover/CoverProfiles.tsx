@@ -1,5 +1,6 @@
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from '@material-ui/core/CssBaseline';
 import React from "react";
 import SimpleCard from "../../common/card/Card";
 import { ReactComponent as OfficerIcon } from "../../icons/officer.svg";
@@ -12,6 +13,7 @@ const styles = makeStyles((theme) => ({
     margin: "0 auto",
   },
   cardItem: {
+    flexBasis: 'min-content',
     padding: '8px'
   },
   wrapper: {
@@ -24,18 +26,19 @@ const styles = makeStyles((theme) => ({
 const CoverProfiles = () => {
   const classes = styles();
   return (
-    <Grid container direction="row" className={classes.wrapper}>
+    <Grid container direction="row" justify="center" alignItems="center" className={classes.wrapper}>
+      <CssBaseline />
       <Grid item className={classes.cardItem}>
         <SimpleCard>
           <ToolTip title="User Profile" placement="left-end">
-            <UserIcon className={classes.item} />
+            <UserIcon />
           </ToolTip>
         </SimpleCard>
       </Grid>
       <Grid item className={classes.cardItem}>
         <SimpleCard>
           <ToolTip title="Officer Profile" placement="right-end">
-            <OfficerIcon className={classes.item} />
+            <OfficerIcon />
           </ToolTip>
         </SimpleCard>
       </Grid>
