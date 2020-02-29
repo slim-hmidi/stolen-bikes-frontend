@@ -1,15 +1,16 @@
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import React from "react";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    backgroundColor: theme.palette.primary.main,
   },
-});
+}));
 
 interface IProps {
   children: React.ReactNode;
