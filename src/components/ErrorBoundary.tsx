@@ -1,6 +1,7 @@
 import React from "react";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
 
 class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
@@ -17,15 +18,20 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   render() {
     if (this.state.hasError) {
       return (
-        <div>
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          style={{
+            height: "50vh"
+          }}>
           <CssBaseline />
           <Typography
             variant="h1"
-            align="center"
             color="secondary">
             Something went wrong.
           </Typography>
-        </div>
+        </Grid>
       )
     }
 

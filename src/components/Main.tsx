@@ -13,7 +13,7 @@ const theme = createMuiTheme({
       main: "#111010",
     },
     secondary: {
-      main: "#ffea00",
+      main: "#ffd600",
     },
     type: "dark",
   },
@@ -21,11 +21,11 @@ const theme = createMuiTheme({
 
 const Main = () => {
   return (
-    <ErrorBoundary>
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary>
         <Root />
-      </ThemeProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </ThemeProvider>
   )
 }
 

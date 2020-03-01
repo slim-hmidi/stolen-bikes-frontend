@@ -6,6 +6,7 @@ import SimpleCard from "../../common/card/Card";
 import { ReactComponent as OfficerIcon } from "../../icons/officer.svg";
 import { ReactComponent as UserIcon } from "../../icons/user.svg";
 import ToolTip from "@material-ui/core/Tooltip";
+import { useHistory } from "react-router-dom";
 
 const styles = makeStyles((theme) => ({
   item: {
@@ -24,19 +25,27 @@ const styles = makeStyles((theme) => ({
   }
 }));
 const CoverProfiles = () => {
+  const history = useHistory();
   const classes = styles();
+
+  const handleClick = (name: string) => {
+    if (name === "user") {
+      return history.push('/user-menu');
+    }
+    return history.push('/officer-menu')
+  }
   return (
     <Grid container direction="row" justify="center" alignItems="center" className={classes.wrapper}>
       <CssBaseline />
       <Grid item className={classes.cardItem}>
-        <SimpleCard>
+        <SimpleCard handleClick={() => handleClick("user")}>
           <ToolTip title="User Profile" placement="left-end">
             <UserIcon />
           </ToolTip>
         </SimpleCard>
       </Grid>
       <Grid item className={classes.cardItem}>
-        <SimpleCard>
+        <SimpleCard handleClick={() => handleClick("officer")}>
           <ToolTip title="Officer Profile" placement="right-end">
             <OfficerIcon />
           </ToolTip>
