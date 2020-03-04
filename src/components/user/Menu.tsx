@@ -22,6 +22,9 @@ const UserMenu = () => {
     history.push('/')
   }
   const handleAnimationEnd = () => setHiddenButton(false);
+  const handleReportCase = () => {
+    history.push('/report-case');
+  }
   return (
     <div>
       <CssBaseline />
@@ -32,7 +35,13 @@ const UserMenu = () => {
         </Grid>
         <Grid item className={classes.item}>
           {
-            !!hiddenButton ? null : <Button variant="contained" color="secondary">Create</Button>
+            !!hiddenButton ? null
+              :
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleReportCase}
+              >Report Case</Button>
           }
         </Grid>
       </Grid>

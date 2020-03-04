@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import App from "./App";
 import OfficerMenu from "./officer/Menu";
 import UserMenu from "./user/Menu";
+import ReportCase from "../containers/user/ReportCase";
 import NoMatch from "./NoMatch";
 
 const Root = () => {
@@ -12,6 +13,7 @@ const Root = () => {
         <Route exact path='/' component={App} />
         <Route path="/user-menu" component={UserMenu} />
         <Route path="/officer-menu" component={OfficerMenu} />
+        <Route path="/report-case" component={ReportCase} />
         <Route path='*' component={NoMatch} />
       </Switch>
     </Router>

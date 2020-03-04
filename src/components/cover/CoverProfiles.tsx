@@ -2,7 +2,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import React from "react";
-import SimpleCard from "../../common/card/Card";
+import SimpleCard from "../../common/card/CliquableCard";
 import { ReactComponent as OfficerIcon } from "../../icons/officer.svg";
 import { ReactComponent as UserIcon } from "../../icons/user.svg";
 import ToolTip from "@material-ui/core/Tooltip";
