@@ -11,6 +11,9 @@ const ReportCase = (props: any) => {
 }
 const ReportCaseForm = reduxForm({
   form: "ReportCaseForm",
+  initialValues: {
+    phoneNumber: "+033 01 23 45 67 89"
+  }
   // onSubmit: submit,
   // validate
 })(ReportCase);

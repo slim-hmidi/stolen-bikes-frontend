@@ -1,13 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import Main from "./components/Main";
 import store from "./redux/store";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(
-  <Provider store={store}><Main /></Provider>, document.getElementById("root"));
+const render = () => {
+  const Main = require("./components/Main").default;
+  ReactDOM.render(
+    <Provider store={store}>
+      <Main />
+    </Provider>,
+    document.getElementById("root"));
+}
+
+render();
+
+if (process.env.NODE_ENV === 'development' && module.hot) {
+  module.hot.accept('./Main', render);
+}
+
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

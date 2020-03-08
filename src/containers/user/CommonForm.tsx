@@ -65,10 +65,10 @@ const CommonForm = (props: IProps) => {
             <Grid container justify="center" spacing={3}>
               <Grid item md={12}>
                 <Field
-                  name="name"
+                  name="owner"
                   type="text"
                   component={TextField}
-                  label="Name"
+                  label="Owner"
                   props={{
                     fullWidth: true
                   }}
@@ -77,9 +77,9 @@ const CommonForm = (props: IProps) => {
               </Grid>
               <Grid item md={12}>
                 <Field
-                  name="email"
-                  type="email"
-                  label="Email"
+                  name="frameNumber"
+                  type="text"
+                  label="Frame Number"
                   component={TextField}
                   props={{
                     fullWidth: true,
@@ -89,9 +89,9 @@ const CommonForm = (props: IProps) => {
               </Grid>
               <Grid item md={12}>
                 <Field
-                  name="address"
-                  type="text"
-                  label="Address"
+                  name="email"
+                  type="email"
+                  label="Email"
                   component={TextField}
                   props={{
                     fullWidth: true,
@@ -113,7 +113,7 @@ const CommonForm = (props: IProps) => {
           </CardWrapper>
         </form>
       </div>
-    </div>
+    </div >
   );
 };
 
