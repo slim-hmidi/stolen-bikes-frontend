@@ -66,7 +66,7 @@ const Form = (props: Props) => {
       <div className={classes.container}>
         <form onSubmit={handleSubmit}>
           <CardWrapper
-            title="New User"
+            title="New Report Case"
             headerColor={true}>
             <Grid container justify="center" spacing={3}>
               <Grid item md={12}>

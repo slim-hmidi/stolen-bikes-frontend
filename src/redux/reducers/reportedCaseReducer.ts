@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { reportNewCase, Case, ReportedCase } from "../../api/reportedCasesApi";
+import history from "../../history/history";
+
 
 
 interface ReportedCasesState {
@@ -38,6 +40,7 @@ export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => 
     dispatch(reportCaseStart());
     const reportedCase = await reportNewCase(newCase);
     dispatch(reportCaseSuccess(reportedCase))
+    history.push('/user-menu');
 
   } catch (error) {
     let errorMessage = "Internal Server Error";

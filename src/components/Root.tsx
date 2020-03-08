@@ -1,14 +1,15 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import App from "./App";
 import OfficerMenu from "./officer/Menu";
 import UserMenu from "./user/Menu";
 import ReportCase from "../containers/user/ReportCase";
 import NoMatch from "./NoMatch";
+import history from "../history/history";
 
 const Root = () => {
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <Route exact path='/' component={App} />
         <Route path="/user-menu" component={UserMenu} />
