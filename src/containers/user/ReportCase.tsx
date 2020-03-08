@@ -1,21 +1,29 @@
-import React from "react";
-import { reduxForm } from "redux-form";
-import CommonForm from "./CommonForm";
-// import { submit, validate } from "./submit";
-
+import React, { useState, useEffect } from "react";
+import { useSelector, shallowEqual } from "react-redux";
+import ReportCaseForm from "./ReportCaseForm";
+import { AppState } from "../../redux/reducers/rootReducer";
+import SnackBar from "../../common/SnackBar";
 
 const ReportCase = (props: any) => {
+  const { error } = useSelector((state: AppState) => state.reportedCaseReducer, shallowEqual);
+  const [open, setOpen] = useState(!!error)
+  useEffect(() => {
+    setOpen(!!error);
+  }, [error]);
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
-    <CommonForm title="New User" buttonLabel="Create User" {...props} />
+    <div>
+      <SnackBar open={open} handleClose={handleClose} severity="error" textMessage={error}
+        anchorOrigin={
+          {
+            vertical: 'bottom',
+            horizontal: 'left'
+          }} />
+      <ReportCaseForm />
+    </div>
   )
 }
-const ReportCaseForm = reduxForm({
-  form: "ReportCaseForm",
-  initialValues: {
-    phoneNumber: "+033 01 23 45 67 89"
-  }
-  // onSubmit: submit,
-  // validate
-})(ReportCase);
 
-export default ReportCaseForm;
+export default ReportCase;

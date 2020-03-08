@@ -9,13 +9,19 @@ import CardWrapper from "../../common/card/SimpleCard";
 import TextField from "../../common/TextFieldWrapper";
 import { useHistory } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
+import { submit, validate } from "./submit";
+import { reduxForm } from "redux-form";
 
-interface IProps {
+interface Props {
   pristine: boolean;
   submitting: boolean;
   handleSubmit: () => void;
-  title: string;
-  buttonLabel: string;
+}
+
+interface FormData {
+  name: string;
+  email: string;
+  bikeFrameNumber: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,10 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
   })
 );
-const CommonForm = (props: IProps) => {
+const Form = (props: Props) => {
   const history = useHistory();
   const classes = useStyles();
-  const { pristine, submitting, handleSubmit, title, buttonLabel } = props
+  const { pristine, submitting, handleSubmit } = props
   const handleFabClick = () => {
     history.push('/user-menu');
   }
@@ -60,15 +66,15 @@ const CommonForm = (props: IProps) => {
       <div className={classes.container}>
         <form onSubmit={handleSubmit}>
           <CardWrapper
-            title={title}
+            title="New User"
             headerColor={true}>
             <Grid container justify="center" spacing={3}>
               <Grid item md={12}>
                 <Field
-                  name="owner"
+                  name="name"
                   type="text"
                   component={TextField}
-                  label="Owner"
+                  label="Name"
                   props={{
                     fullWidth: true
                   }}
@@ -77,9 +83,9 @@ const CommonForm = (props: IProps) => {
               </Grid>
               <Grid item md={12}>
                 <Field
-                  name="frameNumber"
+                  name="bikeFrameNumber"
                   type="text"
-                  label="Frame Number"
+                  label="Bike Frame Number"
                   component={TextField}
                   props={{
                     fullWidth: true,
@@ -106,7 +112,7 @@ const CommonForm = (props: IProps) => {
                   type="submit"
                   disabled={pristine || submitting}
                 >
-                  {buttonLabel}
+                  Report Case
                 </Button>
               </Grid>
             </Grid>
@@ -117,4 +123,10 @@ const CommonForm = (props: IProps) => {
   );
 };
 
-export default CommonForm;
+const ReportCaseForm = reduxForm<any, any, any>({
+  form: "ReportCaseForm",
+  onSubmit: submit,
+  validate
+})(Form);
+
+export default ReportCaseForm;

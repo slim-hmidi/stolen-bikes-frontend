@@ -40,6 +40,10 @@ export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => 
     dispatch(reportCaseSuccess(reportedCase))
 
   } catch (error) {
-    dispatch(reportCaseError(error))
+    let errorMessage = "Internal Server Error";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    }
+    dispatch(reportCaseError(errorMessage))
   }
 }

@@ -117,15 +117,19 @@ export default function PrimarySearchAppBar(props: IProps) {
             <LogOut handleLogout={handleLogout} />
           </div>
           <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              {label === 'user' ? <MoreIcon /> : <LogOut handleLogout={handleLogout} />}
-            </IconButton>
+            {label === "user" ?
+              <IconButton
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+              :
+              <LogOut handleLogout={handleLogout} />}
+            }
           </div>
         </Toolbar>
       </AppBar>

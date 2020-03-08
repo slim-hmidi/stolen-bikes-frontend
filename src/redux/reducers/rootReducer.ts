@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { reducer as formReducer } from "redux-form";
-import bikesReducer from "./bikesReducer";
+import reportedCaseReducer from "./reportedCaseReducer";
 
 const rootReducer = combineReducers({
   form: formReducer,
-  bikesReducer,
+  reportedCaseReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

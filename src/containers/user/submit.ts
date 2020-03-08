@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { reportCaseRequest } from "../../redux/reducers/bikesReducer";
+import { reportCaseRequest } from "../../redux/reducers/reportedCaseReducer";
 
 
 export interface IValues {
@@ -31,7 +31,7 @@ const validate = (values: {
   if (email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
     errors.email = "Invalid email address";
   }
-  if (bikeFrameNumber) {
+  if (!bikeFrameNumber) {
     errors.bikeFrameNumber = "Required";
   }
 
@@ -42,8 +42,9 @@ const submit = (values: IValues, dispatch: Dispatch) => {
   const newCase = {
     email: values.email,
     name: values.name,
-    bikeFrameNumber: values.address,
+    bikeFrameNumber: values.bikeFrameNumber,
   };
+  console.log(newCase);
 
   return dispatch<any>(reportCaseRequest(newCase));
 };
