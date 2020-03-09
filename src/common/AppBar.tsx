@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,6 +11,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
+import Drawer from "./Drawer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +55,7 @@ function LogOut({ handleLogout }: { handleLogout: IProps["handleLogout"] }) {
 
 export default function PrimarySearchAppBar(props: IProps) {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
   const { label, handleLogout } = props;
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -66,6 +68,21 @@ export default function PrimarySearchAppBar(props: IProps) {
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  const toggleDrawer = (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === "keydown" &&
+      ((event as React.KeyboardEvent).key === "Tab" ||
+        (event as React.KeyboardEvent).key === "Shift")
+    ) {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleDrawerOpen = () => {
+    setOpen(true)
+  }
+
 
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -99,9 +116,11 @@ export default function PrimarySearchAppBar(props: IProps) {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
+            onClick={handleDrawerOpen}
           >
             <MenuIcon />
           </IconButton>
+          <Drawer open={open} toggleDrawer={toggleDrawer} />
           <Typography className={classes.title} variant="h6" noWrap>
             Find MyBike
           </Typography>

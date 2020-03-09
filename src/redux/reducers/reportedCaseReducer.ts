@@ -6,12 +6,14 @@ import history from "../../history/history";
 
 
 interface ReportedCasesState {
-  bikes: ReportedCase[];
+  username: string;
+  reportedCases: ReportedCase[];
   error: string | null;
 }
 
 const initialState: ReportedCasesState = {
-  bikes: [],
+  username: 'user',
+  reportedCases: [],
   error: null
 }
 const reportedCases = createSlice({
@@ -23,7 +25,7 @@ const reportedCases = createSlice({
 
     },
     reportCaseSuccess: (state, action: PayloadAction<ReportedCase>) => {
-      state.bikes.push(action.payload)
+      state.reportedCases.push(action.payload)
     },
     reportCaseError: (state, action: PayloadAction<string>) => {
       state.error = action.payload

@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   label: string;
+  defaultValue?: string;
   input: {
     onBlur: (arg: any) => void;
     onChange: (arg: any) => void;
@@ -24,13 +25,14 @@ interface IProps {
     touched: boolean;
     error: string;
   };
+  disabled?: boolean;
   required: boolean;
 }
 
 function SimpleTextField(props: IProps) {
   const classes = useStyles();
 
-  const { required, label, meta, type, input, fullWidth } = props;
+  const { required, label, meta, type, input, fullWidth, disabled, defaultValue } = props;
   return (
     <TextField
       required={required}
@@ -45,6 +47,8 @@ function SimpleTextField(props: IProps) {
       variant="outlined"
       onBlur={input.onBlur}
       fullWidth={fullWidth}
+      disabled={disabled}
+      defaultValue={defaultValue}
       helperText={meta.touched && meta.error ? meta.error : ""}
     />
   );

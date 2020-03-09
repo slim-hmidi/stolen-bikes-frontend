@@ -17,7 +17,7 @@ export interface ReportedCase {
 
 
 export async function reportNewCase(newCase: Case) {
-  const reportedCase = await axios.post<ReportedCase>('/reported_case', {
+  const reportedCase = await axios.post<ReportedCase>('/reported_cases', {
     name: newCase.name,
     email: newCase.email,
     bikeFrameNumber: newCase.bikeFrameNumber,
