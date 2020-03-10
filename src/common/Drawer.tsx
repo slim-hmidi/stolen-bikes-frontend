@@ -6,6 +6,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListAltIcon from '@material-ui/icons/ListAlt';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   list: {
@@ -19,8 +20,13 @@ interface Props {
 }
 
 const DrawerContainer = (props: Props) => {
+  const history = useHistory();
   const classes = useStyles();
   const { open, toggleDrawer } = props;
+
+  const handleClick = () => {
+    history.push('/reported_cases');
+  }
 
   const sideList = () => (
     <div
@@ -30,7 +36,7 @@ const DrawerContainer = (props: Props) => {
       onKeyDown={toggleDrawer}
     >
       <List>
-        <ListItem button>
+        <ListItem button onClick={handleClick}>
           <ListItemIcon>
             <ListAltIcon />
           </ListItemIcon>

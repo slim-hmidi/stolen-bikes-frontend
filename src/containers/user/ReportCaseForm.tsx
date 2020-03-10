@@ -11,6 +11,8 @@ import { useHistory } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
 import { submit, validate } from "./submit";
 import { reduxForm } from "redux-form";
+import { connect } from "react-redux";
+import { AppState } from "../../redux/reducers/rootReducer";
 
 interface Props {
   pristine: boolean;
@@ -79,6 +81,7 @@ const Form = (props: Props) => {
                     fullWidth: true
                   }}
                   required={true}
+                  disabled={true}
                 />
               </Grid>
               <Grid item md={12}>
@@ -123,10 +126,16 @@ const Form = (props: Props) => {
   );
 };
 
-const ReportCaseForm = reduxForm<any, any, any>({
+const ReportCase = reduxForm<any, any, any>({
   form: "ReportCaseForm",
   onSubmit: submit,
   validate
 })(Form);
+
+const ReportCaseForm = connect((state: AppState) => ({
+  initialValues: {
+    name: state.reportedCaseReducer.username
+  }
+}))(ReportCase)
 
 export default ReportCaseForm;
