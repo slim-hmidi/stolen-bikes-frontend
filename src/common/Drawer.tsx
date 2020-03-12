@@ -25,7 +25,7 @@ const DrawerContainer = (props: Props) => {
   const { open, toggleDrawer } = props;
 
   const handleClick = () => {
-    history.push('/reported_cases');
+    history.push('/report-case-list');
   }
 
   const sideList = () => (
