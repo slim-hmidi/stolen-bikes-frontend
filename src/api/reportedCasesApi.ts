@@ -10,11 +10,8 @@ export interface ReportedCase {
   id: string;
   name: string;
   email: string;
-  bikeFrameNumber: string;
-}
-
-export interface FetchedCase extends ReportedCase {
-  caseResolved: boolean;
+  bike_frame_number: string;
+  case_resolved: boolean;
 }
 
 
@@ -28,7 +25,7 @@ export async function reportNewCase(newCase: Case) {
   return reportedCase.data;
 }
 
-export async function fetchReportedCases(username: string): Promise<FetchedCase[]> {
+export async function fetchReportedCases(username: string): Promise<ReportedCase[]> {
   const reportedCaseList = await axios.get(`/reported_cases?name=${username}`);
   const { data } = reportedCaseList
   return data.result;

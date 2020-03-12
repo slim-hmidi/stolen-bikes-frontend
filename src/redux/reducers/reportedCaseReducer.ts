@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { reportNewCase, fetchReportedCases, Case, ReportedCase } from "../../api/reportedCasesApi";
+import { reportNewCase, Case, ReportedCase } from "../../api/reportedCasesApi";
 import history from "../../history/history";
 
 
