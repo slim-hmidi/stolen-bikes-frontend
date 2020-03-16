@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { reportNewCase, Case, ReportedCase } from "../../api/reportedCasesApi";
+import { reportNewCase, Case, ReportedCase, deleteReportCase, updateReportCase } from "../../api/reportedCasesApi";
 import history from "../../history/history";
 
 
@@ -22,13 +22,13 @@ const reportedCases = createSlice({
   name: 'reportedCase',
   initialState,
   reducers: {
-    reportCaseStart: (state) => {
+    caseStart: (state) => {
       state.error = null;
     },
     reportCaseSuccess: (state, action: PayloadAction<ReportedCase>) => {
       state.reportedCases.push(action.payload)
     },
-    reportCaseError: (state, action: PayloadAction<string>) => {
+    caseError: (state, action: PayloadAction<string>) => {
       state.error = action.payload
     },
     fetchReportedCasesStart: (state) => {
@@ -42,22 +42,35 @@ const reportedCases = createSlice({
     fetchReportCasesError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
+    },
+    deletedReportedCaseSuccess: (state, action: PayloadAction<number>) => {
+      state.reportedCases = state.reportedCases.filter(c => c.id !== action.payload);
+    },
+    updateReportedCaseSuccess: (state, action: PayloadAction<ReportedCase>) => {
+      state.reportedCases = state.reportedCases.map(c => {
+        if (c.id === action.payload.id) {
+          c = action.payload;
+        }
+        return c;
+      });
     }
   }
 })
 
-export const { reportCaseStart,
+export const { caseStart,
   reportCaseSuccess,
-  reportCaseError,
+  caseError,
   fetchReportedCasesStart,
   fetchReportCasesSuccess,
-  fetchReportCasesError } = reportedCases.actions;
+  fetchReportCasesError,
+  deletedReportedCaseSuccess,
+  updateReportedCaseSuccess } = reportedCases.actions;
 
 export default reportedCases.reducer;
 
 export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => {
   try {
-    dispatch(reportCaseStart());
+    dispatch(caseStart());
     const reportedCase = await reportNewCase(newCase);
     dispatch(reportCaseSuccess(reportedCase))
     history.push('/user-menu');
@@ -67,20 +80,37 @@ export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => 
     if (error.response) {
       errorMessage = error.response.data.message;
     }
-    dispatch(reportCaseError(errorMessage))
+    dispatch(caseError(errorMessage))
   }
 }
 
-// export const fetchReportedCasesRequest = (username: string): AppThunk => async dispatch => {
-//   try {
-//     dispatch(fetchReportedCasesStart())
-//     const reportedCasesList = await fetchReportedCases(username);
-//     dispatch(fetchReportCasesSuccess(reportedCasesList))
-//   } catch (error) {
-//     let errorMessage = "Internal Server Error";
-//     if (error.response) {
-//       errorMessage = error.response.data.message;
-//     }
-//     dispatch(fetchReportCasesError(errorMessage))
-//   }
-// }
+export const deleteCaseRequest = (id: number): AppThunk => async dispatch => {
+  try {
+    dispatch(caseStart());
+    const deletedReportedCase = await deleteReportCase(id);
+    dispatch(deletedReportedCaseSuccess(deletedReportedCase.id))
+
+  } catch (error) {
+    let errorMessage = "Internal Server Error";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    }
+    dispatch(caseError(errorMessage))
+  }
+}
+
+export const updateCaseRequest = (caseToUpdate: ReportedCase): AppThunk => async dispatch => {
+  try {
+    dispatch(caseStart());
+    const updatedCase = await updateReportCase(caseToUpdate);
+    dispatch(updateReportedCaseSuccess(updatedCase))
+
+  } catch (error) {
+    let errorMessage = "Internal Server Error";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    }
+    dispatch(caseError(errorMessage))
+  }
+}
+

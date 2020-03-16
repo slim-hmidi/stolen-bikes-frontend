@@ -1,21 +1,16 @@
 import React from 'react';
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Toolbar from "@material-ui/core/Toolbar";
 import TableCell from "@material-ui/core/TableCell";
 import Checkbox from "@material-ui/core/Checkbox";
 import TableSortLabel from "@material-ui/core/TableSortLabel"
-import IconButton from "@material-ui/core/IconButton"
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
 import {
   createStyles,
   lighten,
   makeStyles,
   Theme
 } from "@material-ui/core/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
+
 import { UserData, headCells, Order } from "../utils/table.interfaces";
 
 
@@ -137,68 +132,3 @@ export function EnhancedTableHead(props: EnhancedTableProps<UserData>) {
     </TableHead >
   );
 }
-
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-      color: theme.palette.secondary.main
-    },
-    highlight:
-      theme.palette.type === "light"
-        ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
-        : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
-    title: {
-      flex: "1 1 100%"
-    }
-  })
-);
-
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-  tableTitle: string;
-}
-
-export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const classes = useToolbarStyles();
-  const { numSelected, tableTitle } = props;
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0
-      })
-      }
-    >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-          <Typography className={classes.title} variant="h6" id="tableTitle" >
-            {tableTitle}
-          </Typography>
-        )}
-      {
-        numSelected > 0 ? (
-          <Tooltip title="Delete" >
-            <IconButton aria-label="delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : null
-      }
-    </Toolbar >
-  );
-};

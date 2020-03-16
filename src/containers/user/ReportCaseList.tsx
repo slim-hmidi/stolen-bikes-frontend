@@ -3,6 +3,7 @@ import { useSelector, shallowEqual, useDispatch } from "react-redux";
 import { AppState } from '../../redux/reducers/rootReducer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
+  lighten,
   createStyles,
   makeStyles,
   Theme
@@ -15,17 +16,122 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
+import Fab from "@material-ui/core/Fab";
+import HomeIcon from "@material-ui/icons/Home";
+import { useHistory } from "react-router-dom";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton"
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
+import Toolbar from "@material-ui/core/Toolbar";
 
 import {
   fetchReportedCasesStart,
   fetchReportCasesSuccess,
   fetchReportCasesError,
-  reportCaseRequest
+  deleteCaseRequest,
+  updateCaseRequest
 } from "../../redux/reducers/reportedCaseReducer";
-import { fetchReportedCases } from "../../api/reportedCasesApi";
-import { EnhancedTableHead, stableSort, getComparator, EnhancedTableToolbar } from "../../common/TableUtils";
+import { fetchReportedCases, ReportedCase } from "../../api/reportedCasesApi";
+import { EnhancedTableHead, stableSort, getComparator } from "../../common/TableUtils";
 import { Order, UserData } from "../../utils/table.interfaces"
 
+const useToolbarStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+      color: theme.palette.secondary.main
+    },
+    highlight:
+      theme.palette.type === "light"
+        ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
+        : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
+    title: {
+      flex: "1 1 100%"
+    }
+  })
+);
+
+interface EnhancedTableToolbarProps {
+  numSelected: number;
+  tableTitle: string;
+  slectedItem?: ReportedCase;
+}
+
+export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+  const classes = useToolbarStyles();
+  const dispatch = useDispatch();
+  const { numSelected, tableTitle, slectedItem } = props;
+
+  const deleteItem = (id: number) => {
+    dispatch(deleteCaseRequest(id));
+  }
+  const editItem = (item: ReportedCase) => {
+    dispatch(updateCaseRequest(item));
+  }
+
+  return (
+    <Toolbar
+      className={clsx(classes.root, {
+        [classes.highlight]: numSelected > 0
+      })
+      }
+    >
+      {numSelected > 0 ? (
+        <Typography
+          className={classes.title}
+          color="inherit"
+          variant="subtitle1"
+        >
+          {numSelected} selected
+        </Typography>
+      ) : (
+          <Typography className={classes.title} variant="h6" id="tableTitle" >
+            {tableTitle}
+          </Typography>
+        )}
+      {
+        numSelected === 1 && slectedItem && (
+          <Grid container direction="row" justify="flex-end">
+            <Tooltip title="Delete" >
+              <IconButton aria-label="delete" onClick={() => deleteItem(slectedItem.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit" >
+              <IconButton aria-label="edit" onClick={() => editItem(slectedItem)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+        )
+      }
+
+      {
+        numSelected > 1 ? (
+          <Tooltip title="Delete" >
+            <IconButton aria-label="delete">
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        )
+          :
+          null
+
+      }
+    </Toolbar >
+  );
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,12 +145,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     table: {
       minWidth: 750,
+    },
+    homeIcon: {
+      right: 4,
+      bottom: 4,
+      position: "absolute"
     }
+
   })
 );
 
 function ReportedCaseList() {
   const classes = useStyles();
+  const history = useHistory();
   const dispatch = useDispatch();
   const { username } = useSelector((state: AppState) =>
     ({ username: state.reportedCaseReducer.username }), shallowEqual);
@@ -109,6 +222,10 @@ function ReportedCaseList() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  const handleFabClick = () => {
+    history.push('/user-menu');
+  }
+
   useEffect(() => {
     async function getReportedCasesList() {
       try {
@@ -136,6 +253,12 @@ function ReportedCaseList() {
   return (
     <div>
       <CssBaseline />
+      <Fab
+        className={classes.homeIcon}
+        color="secondary"
+        onClick={handleFabClick}>
+        <HomeIcon />
+      </Fab>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} tableTitle="Reported Cases" />
         <TableContainer>
@@ -155,13 +278,13 @@ function ReportedCaseList() {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.bikeFrameNumber);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={event => handleClick(event, row.bikeFrameNumber)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
