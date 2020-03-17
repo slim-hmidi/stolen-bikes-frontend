@@ -22,8 +22,8 @@ const UpdateCase = reduxForm({
   validate
 })(UpdateForm);
 
-const UpdateCaseForm = connect((state: AppState, ownParams: any) => {
-  const selectedCase = selectedReportedCase(ownParams.match.params.reportCaseId)(state);
+const mapStateToProps = (state: AppState, ownProps: any) => {
+  const selectedCase = selectedReportedCase(ownProps.match.params.reportCaseId)(state);
   let initialValues;
   if (selectedCase) {
     initialValues = {
@@ -35,6 +35,6 @@ const UpdateCaseForm = connect((state: AppState, ownParams: any) => {
   return {
     initialValues
   }
-})(UpdateCase)
+}
 
-export default UpdateCaseForm;
+export default connect(mapStateToProps)(UpdateCase);

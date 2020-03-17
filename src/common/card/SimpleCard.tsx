@@ -7,11 +7,15 @@ import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    container: {
+      backgroundColor: theme.palette.primary.dark
+    },
+    header: {
       backgroundColor: theme.palette.secondary.main
     },
     title: {
-      color: theme.palette.primary.contrastText
+      color: theme.palette.primary.contrastText,
+      textAlign: "center"
     }
   })
 );
@@ -26,9 +30,9 @@ const SimpleCard = (props: IProps) => {
   const classes = useStyles();
   const { children, title, headerColor } = props;
 
-  const headerStyles = headerColor ? classNames(classes.root, classes.title) : "";
+  const headerStyles = headerColor ? classNames(classes.header, classes.title) : "";
   return (
-    <Card>
+    <Card className={classes.container}>
       <CardHeader
         className={headerStyles}
         title={title}

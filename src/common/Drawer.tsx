@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -8,11 +8,14 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { useHistory } from "react-router-dom";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  drawer: {
+    backgroundColor: theme.palette.primary.dark
+  },
   list: {
     width: 250
   }
-});
+}));
 
 interface Props {
   open: boolean,
@@ -48,7 +51,12 @@ const DrawerContainer = (props: Props) => {
 
   return (
     <div>
-      <Drawer open={open} onClose={toggleDrawer}>
+      <Drawer
+        open={open}
+        onClose={toggleDrawer}
+        classes={{
+          paper: classes.drawer
+        }}>
         {sideList()}
       </Drawer>
     </div>

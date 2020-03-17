@@ -33,9 +33,8 @@ import {
   fetchReportCasesSuccess,
   fetchReportCasesError,
   deleteCaseRequest,
-  updateCaseRequest
 } from "../../redux/reducers/reportedCaseReducer";
-import { fetchReportedCases, ReportedCase } from "../../api/reportedCasesApi";
+import { fetchReportedCases } from "../../api/reportedCasesApi";
 import { EnhancedTableHead, stableSort, getComparator } from "../../common/TableUtils";
 import { Order, UserData } from "../../utils/table.interfaces"
 
@@ -63,21 +62,23 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 );
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
+  selectedItems: number[];
   tableTitle: string;
-  slectedItem?: ReportedCase;
 }
 
 export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
+  const history = useHistory();
   const dispatch = useDispatch();
-  const { numSelected, tableTitle, slectedItem } = props;
+  const { selectedItems, tableTitle } = props;
+
+  const numSelected = selectedItems.length;
 
   const deleteItem = (id: number) => {
     dispatch(deleteCaseRequest(id));
   }
-  const editItem = (item: ReportedCase) => {
-    dispatch(updateCaseRequest(item));
+  const handleEdit = (id: number) => {
+    history.push(`/update-case/${id}`);
   }
 
   return (
@@ -101,15 +102,15 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           </Typography>
         )}
       {
-        numSelected === 1 && slectedItem && (
+        numSelected === 1 && (
           <Grid container direction="row" justify="flex-end">
             <Tooltip title="Delete" >
-              <IconButton aria-label="delete" onClick={() => deleteItem(slectedItem.id)}>
+              <IconButton aria-label="delete" onClick={() => deleteItem(selectedItems[0])}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit" >
-              <IconButton aria-label="edit" onClick={() => editItem(slectedItem)}>
+              <IconButton aria-label="edit" onClick={() => handleEdit(selectedItems[0])}>
                 <EditIcon />
               </IconButton>
             </Tooltip>
@@ -164,7 +165,7 @@ function ReportedCaseList() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [rows, setRows] = React.useState<UserData[]>([]);
   const [orderBy, setOrderBy] = React.useState<keyof UserData>("bikeFrameNumber");
-  const [selected, setSelected] = React.useState<string[]>([]);
+  const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -179,19 +180,20 @@ function ReportedCaseList() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
+      const newSelecteds = rows.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] = [];
+  const handleClick = (event: React.MouseEvent<unknown>, row: UserData) => {
+    const { id } = row;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -217,7 +219,7 @@ function ReportedCaseList() {
     setPage(0);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -233,6 +235,7 @@ function ReportedCaseList() {
         const reportedCasesList = await fetchReportedCases(username);
         dispatch(fetchReportCasesSuccess(reportedCasesList))
         const data: UserData[] = reportedCasesList.map(e => ({
+          id: e.id,
           name: e.name,
           email: e.email,
           bikeFrameNumber: e.bike_frame_number,
@@ -260,7 +263,10 @@ function ReportedCaseList() {
         <HomeIcon />
       </Fab>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} tableTitle="Reported Cases" />
+        <EnhancedTableToolbar
+          selectedItems={selected}
+          tableTitle="Reported Cases"
+        />
         <TableContainer>
           <Table
             className={classes.table}
@@ -278,17 +284,17 @@ function ReportedCaseList() {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.bikeFrameNumber);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.bikeFrameNumber)}
+                      onClick={event => handleClick(event, row)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.bikeFrameNumber}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">

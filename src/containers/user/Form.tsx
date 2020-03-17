@@ -9,10 +9,6 @@ import CardWrapper from "../../common/card/SimpleCard";
 import TextField from "../../common/TextFieldWrapper";
 import { useHistory } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
-import { submit, validate } from "./submit";
-import { reduxForm } from "redux-form";
-import { connect } from "react-redux";
-import { AppState } from "../../redux/reducers/rootReducer";
 
 interface Props {
   update: boolean;
@@ -26,14 +22,18 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
+      backgroundColor: theme.palette.primary.dark,
+    },
+    wrapper: {
       flexGrow: 1,
       margin: "auto",
       marginTop: '5%',
-      maxWidth: "80%",
+      maxWidth: "40%",
       padding: 16,
     },
     item: {
-      marginTop: 16
+      marginRight: theme.spacing(4),
+      marginLeft: theme.spacing(4)
     },
     paper: {
       padding: 16
@@ -62,13 +62,19 @@ const Form = (props: Props) => {
         onClick={handleFabClick}>
         <HomeIcon />
       </Fab>
-      <div className={classes.container}>
+      <div className={classes.wrapper}>
         <form onSubmit={handleSubmit}>
           <CardWrapper
             title={title}
             headerColor={true}>
-            <Grid container justify="center" spacing={3}>
-              <Grid item md={12}>
+            <Grid container
+              justify="center"
+              spacing={3}
+              className={classes.container}>
+              <Grid
+                item
+                md={12}
+                className={classes.item}>
                 <Field
                   name="name"
                   type="text"
@@ -81,7 +87,10 @@ const Form = (props: Props) => {
                   disabled={true}
                 />
               </Grid>
-              <Grid item md={12}>
+              <Grid
+                item
+                md={12}
+                className={classes.item}>
                 <Field
                   name="bikeFrameNumber"
                   type="text"
@@ -93,7 +102,10 @@ const Form = (props: Props) => {
                   required={true}
                 />
               </Grid>
-              <Grid item md={12}>
+              <Grid
+                item
+                md={12}
+                className={classes.item}>
                 <Field
                   name="email"
                   type="email"
@@ -105,9 +117,12 @@ const Form = (props: Props) => {
                   required={true}
                 />
               </Grid>
-              {
-                update ?
-                  <Grid item md={12}>
+              <Grid
+                item
+                md={12}
+                className={classes.item}>
+                {
+                  update ?
                     <Field
                       name="resolvedCase"
                       type="text"
@@ -118,10 +133,10 @@ const Form = (props: Props) => {
                       }}
                       required={true}
                     />
-                  </Grid>
-                  :
-                  null
-              }
+                    :
+                    null
+                }
+              </Grid>
               <Grid item className={classes.item}>
                 <Button
                   variant="contained"
