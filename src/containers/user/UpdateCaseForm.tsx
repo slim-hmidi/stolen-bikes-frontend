@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { reduxForm } from "redux-form";
+import { withRouter } from "react-router-dom";
 import CommonForm from "./Form";
 import { submit, validate } from "./submit";
 import { AppState } from "../../redux/reducers/rootReducer";
@@ -23,13 +24,15 @@ const UpdateCase = reduxForm({
 })(UpdateForm);
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
-  const selectedCase = selectedReportedCase(ownProps.match.params.reportCaseId)(state);
+  const selectedCase = selectedReportedCase(parseInt(ownProps.match.params.reportCaseId, 10))(state);
   let initialValues;
   if (selectedCase) {
     initialValues = {
       name: selectedCase.name,
       email: selectedCase.email,
       bikeFrameNumber: selectedCase.bike_frame_number,
+      resolvedCase: selectedCase.case_resolved,
+
     }
   }
   return {
@@ -37,4 +40,4 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   }
 }
 
-export default connect(mapStateToProps)(UpdateCase);
+export default withRouter(connect(mapStateToProps)(UpdateCase));

@@ -132,6 +132,7 @@ const Form = (props: Props) => {
                         fullWidth: true,
                       }}
                       required={true}
+                      disabled={true}
                     />
                     :
                     null
