@@ -1,7 +1,13 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import AppBar from "../../common/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import AppBar from "../../common/AppBar";
+import ResolvedCasesList from "../../containers/officer/ResolvedCaseList";
+import ExpansionPanel from "../../common/ExpansionPanel";
+
+
+
+
 
 
 const UserMenu = () => {
@@ -13,6 +19,9 @@ const UserMenu = () => {
     <div>
       <CssBaseline />
       <AppBar label="officer" handleLogout={handleLogout} />
+      <ExpansionPanel title='Resolved Cases'>
+        <ResolvedCasesList />
+      </ExpansionPanel>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { reduxForm } from "redux-form";
 import { withRouter } from "react-router-dom";
 import CommonForm from "./Form";
-import { submit, validate } from "./submit";
+import { updateSubmit, validate } from "./submit";
 import { AppState } from "../../redux/reducers/rootReducer";
 import { selectedReportedCase } from "../../redux/selectors/user.selectors";
 
@@ -19,7 +19,7 @@ const UpdateForm = (props: any) => {
 }
 const UpdateCase = reduxForm({
   form: "UpdateCaseForm",
-  onSubmit: submit,
+  onSubmit: updateSubmit,
   validate
 })(UpdateForm);
 
@@ -31,7 +31,7 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
       name: selectedCase.name,
       email: selectedCase.email,
       bikeFrameNumber: selectedCase.bike_frame_number,
-      resolvedCase: selectedCase.case_resolved,
+      caseResolved: selectedCase.case_resolved,
 
     }
   }

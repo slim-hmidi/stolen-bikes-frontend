@@ -3,16 +3,17 @@ import axios from 'axios';
 export interface Case {
   name: string;
   email: string;
-  bikeFrameNumber: string;
+  bikeFrameNumber: number;
 }
 
 export interface ReportedCase {
   id: number;
   name: string;
   email: string;
-  bike_frame_number: string;
+  bike_frame_number: number;
   case_resolved: boolean;
 }
+
 
 
 
@@ -40,5 +41,10 @@ export async function deleteReportCase(id: number): Promise<ReportedCase> {
 
 export async function updateReportCase(caseToUpdate: ReportedCase): Promise<ReportedCase> {
   const { data } = await axios.patch(`/reported_cases/${caseToUpdate.id}`, caseToUpdate);
+  return data.result;
+}
+
+export async function resolvedAffectedCases(officerId: number): Promise<Case[]> {
+  const { data } = await axios.get(`/resolved_cases/${officerId}`);
   return data.result;
 }

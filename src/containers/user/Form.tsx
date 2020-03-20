@@ -93,7 +93,7 @@ const Form = (props: Props) => {
                 className={classes.item}>
                 <Field
                   name="bikeFrameNumber"
-                  type="text"
+                  type="number"
                   label="Bike Frame Number"
                   component={TextField}
                   props={{
@@ -124,7 +124,7 @@ const Form = (props: Props) => {
                 {
                   update ?
                     <Field
-                      name="resolvedCase"
+                      name="caseResolved"
                       type="text"
                       label="Resolved Case"
                       component={TextField}

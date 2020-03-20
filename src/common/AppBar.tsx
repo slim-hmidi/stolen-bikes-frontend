@@ -111,15 +111,19 @@ export default function PrimarySearchAppBar(props: IProps) {
     <div className={classes.grow}>
       <AppBar position="static" color="secondary">
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-          >
-            <MenuIcon />
-          </IconButton>
+          {label === "user" ?
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+            :
+            null
+          }
           <Drawer open={open} toggleDrawer={toggleDrawer} />
           <Typography className={classes.title} variant="h6" noWrap>
             Find MyBike

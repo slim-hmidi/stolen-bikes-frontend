@@ -1,9 +1,9 @@
-export interface UserData {
+export interface Data {
   id: number;
   name: string;
   email: string;
-  bikeFrameNumber: string;
-  resolvedCase: boolean;
+  bikeFrameNumber: number;
+  caseResolved: boolean;
 }
 
 export type Order = "asc" | "desc";
@@ -11,7 +11,7 @@ export type Order = "asc" | "desc";
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof UserData;
+  id: keyof Data;
   label: string;
   numeric: boolean;
 }
@@ -26,7 +26,7 @@ export const headCells: HeadCell[] = [
     label: "Bike Frame Number"
   },
   {
-    id: "resolvedCase",
+    id: "caseResolved",
     numeric: false,
     disablePadding: false,
     label: "Resolved case"

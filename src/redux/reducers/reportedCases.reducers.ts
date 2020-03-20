@@ -48,6 +48,7 @@ const reportedCases = createSlice({
     },
     updateReportedCaseSuccess: (state, action: PayloadAction<ReportedCase>) => {
       state.reportedCases = state.reportedCases.map(c => {
+
         if (c.id === action.payload.id) {
           c = action.payload;
         }
@@ -73,7 +74,7 @@ export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => 
     dispatch(caseStart());
     const reportedCase = await reportNewCase(newCase);
     dispatch(reportCaseSuccess(reportedCase))
-    history.push('/user-menu');
+    history.push('/report-case-list');
 
   } catch (error) {
     let errorMessage = "Internal Server Error";
@@ -104,6 +105,7 @@ export const updateCaseRequest = (caseToUpdate: ReportedCase): AppThunk => async
     dispatch(caseStart());
     const updatedCase = await updateReportCase(caseToUpdate);
     dispatch(updateReportedCaseSuccess(updatedCase))
+    history.push('/report-case-list');
 
   } catch (error) {
     let errorMessage = "Internal Server Error";

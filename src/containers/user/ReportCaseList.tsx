@@ -33,10 +33,10 @@ import {
   fetchReportCasesSuccess,
   fetchReportCasesError,
   deleteCaseRequest,
-} from "../../redux/reducers/reportedCaseReducer";
+} from "../../redux/reducers/reportedCases.reducers";
 import { fetchReportedCases } from "../../api/reportedCasesApi";
 import { EnhancedTableHead, stableSort, getComparator } from "../../common/TableUtils";
-import { Order, UserData } from "../../utils/table.interfaces"
+import { Order, Data } from "../../utils/table.interfaces"
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -163,15 +163,15 @@ function ReportedCaseList() {
   const { username } = useSelector((state: AppState) =>
     ({ username: state.reportedCaseReducer.username }), shallowEqual);
   const [order, setOrder] = React.useState<Order>("asc");
-  const [rows, setRows] = React.useState<UserData[]>([]);
-  const [orderBy, setOrderBy] = React.useState<keyof UserData>("bikeFrameNumber");
+  const [rows, setRows] = React.useState<Data[]>([]);
+  const [orderBy, setOrderBy] = React.useState<keyof Data>("bikeFrameNumber");
   const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof UserData
+    property: keyof Data
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -187,7 +187,7 @@ function ReportedCaseList() {
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, row: UserData) => {
+  const handleClick = (event: React.MouseEvent<unknown>, row: Data) => {
     const { id } = row;
     const selectedIndex = selected.indexOf(id);
     let newSelected: number[] = [];
@@ -234,12 +234,12 @@ function ReportedCaseList() {
         dispatch(fetchReportedCasesStart())
         const reportedCasesList = await fetchReportedCases(username);
         dispatch(fetchReportCasesSuccess(reportedCasesList))
-        const data: UserData[] = reportedCasesList.map(e => ({
+        const data: Data[] = reportedCasesList.map(e => ({
           id: e.id,
           name: e.name,
           email: e.email,
           bikeFrameNumber: e.bike_frame_number,
-          resolvedCase: e.case_resolved
+          caseResolved: e.case_resolved
         }));
         setRows(data);
       } catch (error) {
@@ -313,7 +313,7 @@ function ReportedCaseList() {
                       </TableCell>
                       <TableCell>{row.email}</TableCell>
                       <TableCell>{row.bikeFrameNumber}</TableCell>
-                      <TableCell>{row.resolvedCase.toString()}</TableCell>
+                      <TableCell>{row.caseResolved.toString()}</TableCell>
                     </TableRow>
                   );
                 })}

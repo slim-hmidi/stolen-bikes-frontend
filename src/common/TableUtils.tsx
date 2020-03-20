@@ -10,7 +10,7 @@ import {
   Theme
 } from "@material-ui/core/styles";
 
-import { UserData, headCells, Order } from "../utils/table.interfaces";
+import { Data, headCells, Order } from "../utils/table.interfaces";
 
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -76,7 +76,7 @@ const useEnhancedTableHeadStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export function EnhancedTableHead(props: EnhancedTableProps<UserData>) {
+export function EnhancedTableHead(props: EnhancedTableProps<Data>) {
   const {
     onSelectAllClick,
     order,
@@ -86,7 +86,7 @@ export function EnhancedTableHead(props: EnhancedTableProps<UserData>) {
     onRequestSort
   } = props;
   const classes = useEnhancedTableHeadStyles();
-  const createSortHandler = (property: keyof UserData) => (
+  const createSortHandler = (property: keyof Data) => (
     event: React.MouseEvent<unknown>
   ) => {
     onRequestSort(event, property);

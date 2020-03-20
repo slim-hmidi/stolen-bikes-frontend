@@ -1,12 +1,12 @@
 import { Dispatch } from "redux";
-import { reportCaseRequest } from "../../redux/reducers/reportedCaseReducer";
+import { reportCaseRequest, updateCaseRequest } from "../../redux/reducers/reportedCases.reducers";
 
 
 export interface IValues {
-  bikeFrameNumber: string;
+  bikeFrameNumber: number;
   name: string;
   email: string;
-  [key: string]: string
+  [key: string]: string | number;
 }
 
 interface IError {
@@ -17,7 +17,7 @@ interface IError {
 const validate = (values: {
   name: string;
   email: string;
-  bikeFrameNumber: string;
+  bikeFrameNumber: number;
 }) => {
   const errors: IError = {};
   const { name, email, bikeFrameNumber } = values;
@@ -42,13 +42,34 @@ const submit = (values: IValues, dispatch: Dispatch) => {
   const newCase = {
     email: values.email,
     name: values.name,
-    bikeFrameNumber: values.bikeFrameNumber,
+    bikeFrameNumber: Number(values.bikeFrameNumber),
   };
-  console.log(newCase);
+
 
   return dispatch<any>(reportCaseRequest(newCase));
 };
 
 
+const updateSubmit = (values: IValues, dispatch: Dispatch, { ...props }) => {
+  const { reportCaseId } = props.match.params;
+  let reportCase;
+  reportCase = Object.keys(values)
+    .filter((k: string) => values[k])
+    .reduce((acc: any, curr) => {
+      const tmp = values[curr];
+      if (curr === 'bikeFrameNumber') {
+        curr = 'bike_frame_number'
+      }
+      if (curr === 'caseResolved') {
+        curr = 'case_resolved'
+      }
+      acc[curr] = tmp;
+      return acc;
+    }, {});
 
-export { validate, submit };
+  Object.assign(reportCase, { id: parseInt(reportCaseId, 10) })
+  return dispatch<any>(updateCaseRequest(reportCase));
+};
+
+
+export { validate, submit, updateSubmit };
