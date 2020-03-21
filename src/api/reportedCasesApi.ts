@@ -14,6 +14,13 @@ export interface ReportedCase {
   case_resolved: boolean;
 }
 
+export interface AffectedCase {
+  name: string;
+  email: string;
+  bikeFrameNumber: number;
+  caseResolved: boolean;
+}
+
 
 
 
@@ -44,7 +51,12 @@ export async function updateReportCase(caseToUpdate: ReportedCase): Promise<Repo
   return data.result;
 }
 
-export async function resolvedAffectedCases(officerId: number): Promise<Case[]> {
+export async function resolvedCases(officerId: number): Promise<Case[]> {
   const { data } = await axios.get(`/resolved_cases/${officerId}`);
+  return data.result;
+}
+
+export async function affectedCases(officerId: number): Promise<AffectedCase[]> {
+  const { data } = await axios.get(`/affected_cases/${officerId}`);
   return data.result;
 }

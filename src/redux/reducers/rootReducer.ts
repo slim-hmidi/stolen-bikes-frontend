@@ -1,7 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { reducer as formReducer } from "redux-form";
 import reportedCaseReducer from "./reportedCases.reducers";
-import affectedCasesReducer from "./affectedCases.reducers";
+import affectedCasesReducer from "./officerCases.reducers";
 
 const rootReducer = combineReducers({
   form: formReducer,
