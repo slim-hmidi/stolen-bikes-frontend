@@ -27,14 +27,14 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import Toolbar from "@material-ui/core/Toolbar";
-
+import CircularLoading from "../../common/Progress";
 import {
   fetchReportedCasesStart,
   fetchReportCasesSuccess,
   fetchReportCasesError,
   deleteCaseRequest,
 } from "../../redux/reducers/reportedCases.reducers";
-import { fetchReportedCases } from "../../api/reportedCasesApi";
+import { fetchReportedCasesApi } from "../../api/reportedCasesApi";
 import { EnhancedTableHead, stableSort, getComparator } from "../../common/TableUtils";
 import { Order, Data } from "../../utils/table.interfaces"
 
@@ -142,7 +142,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: "100%",
       backgroundColor: theme.palette.primary.main,
-      marginBottom: theme.spacing(2)
+      marginBottom: theme.spacing(2),
     },
     table: {
       minWidth: 750,
@@ -151,6 +151,11 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 4,
       bottom: 4,
       position: "absolute"
+    },
+    progress: {
+      position: 'fixed',
+      left: '50%',
+      top: '50%'
     }
 
   })
@@ -160,8 +165,11 @@ function ReportedCaseList() {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { username } = useSelector((state: AppState) =>
-    ({ username: state.reportedCaseReducer.username }), shallowEqual);
+  const { username, loading } = useSelector((state: AppState) =>
+    ({
+      username: state.reportedCaseReducer.username,
+      loading: state.reportedCaseReducer.loading
+    }), shallowEqual);
   const [order, setOrder] = React.useState<Order>("asc");
   const [rows, setRows] = React.useState<Data[]>([]);
   const [orderBy, setOrderBy] = React.useState<keyof Data>("bikeFrameNumber");
@@ -232,7 +240,7 @@ function ReportedCaseList() {
     async function getReportedCasesList() {
       try {
         dispatch(fetchReportedCasesStart())
-        const reportedCasesList = await fetchReportedCases(username);
+        const reportedCasesList = await fetchReportedCasesApi(username);
         dispatch(fetchReportCasesSuccess(reportedCasesList))
         const data: Data[] = reportedCasesList.map(e => ({
           id: e.id,
@@ -256,85 +264,94 @@ function ReportedCaseList() {
   return (
     <div>
       <CssBaseline />
-      <Fab
-        className={classes.homeIcon}
-        color="secondary"
-        onClick={handleFabClick}>
-        <HomeIcon />
-      </Fab>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar
-          selectedItems={selected}
-          tableTitle="Reported Cases"
-        />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            size="medium"
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+      {
+        loading ?
+          <div className={classes.progress}>
+            <CircularLoading />
+          </div>
+          :
+          <div>
+            <Fab
+              className={classes.homeIcon}
+              color="secondary"
+              onClick={handleFabClick}>
+              <HomeIcon />
+            </Fab>
+            <Paper className={classes.paper}>
+              <EnhancedTableToolbar
+                selectedItems={selected}
+                tableTitle="Reported Cases"
+              />
+              <TableContainer>
+                <Table
+                  className={classes.table}
+                  size="medium"
+                >
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                  />
+                  <TableBody>
+                    {stableSort(rows, getComparator(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        const isItemSelected = isSelected(row.id);
+                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => handleClick(event, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.bikeFrameNumber}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.email}</TableCell>
-                      <TableCell>{row.bikeFrameNumber}</TableCell>
-                      <TableCell>{row.caseResolved.toString()}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
+                        return (
+                          <TableRow
+                            hover
+                            onClick={event => handleClick(event, row)}
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={row.bikeFrameNumber}
+                            selected={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isItemSelected}
+                                inputProps={{ "aria-labelledby": labelId }}
+                              />
+                            </TableCell>
+                            <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                            >
+                              {row.name}
+                            </TableCell>
+                            <TableCell>{row.email}</TableCell>
+                            <TableCell>{row.bikeFrameNumber}</TableCell>
+                            <TableCell>{row.caseResolved.toString()}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+            </Paper>
+          </div>
+      }
     </div>
   );
 }

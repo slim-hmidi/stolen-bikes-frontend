@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { reportNewCase, Case, ReportedCase, deleteReportCase, updateReportCase } from "../../api/reportedCasesApi";
+import { reportNewCaseApi, Case, ReportedCase, deleteReportCaseApi, updateReportCaseApi } from "../../api/reportedCasesApi";
 import history from "../../history/history";
 
 
@@ -72,7 +72,7 @@ export default reportedCases.reducer;
 export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => {
   try {
     dispatch(caseStart());
-    const reportedCase = await reportNewCase(newCase);
+    const reportedCase = await reportNewCaseApi(newCase);
     dispatch(reportCaseSuccess(reportedCase))
     history.push('/report-case-list');
 
@@ -88,7 +88,7 @@ export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => 
 export const deleteCaseRequest = (id: number): AppThunk => async dispatch => {
   try {
     dispatch(caseStart());
-    const deletedReportedCase = await deleteReportCase(id);
+    const deletedReportedCase = await deleteReportCaseApi(id);
     dispatch(deletedReportedCaseSuccess(deletedReportedCase.id))
 
   } catch (error) {
@@ -103,7 +103,7 @@ export const deleteCaseRequest = (id: number): AppThunk => async dispatch => {
 export const updateCaseRequest = (caseToUpdate: ReportedCase): AppThunk => async dispatch => {
   try {
     dispatch(caseStart());
-    const updatedCase = await updateReportCase(caseToUpdate);
+    const updatedCase = await updateReportCaseApi(caseToUpdate);
     dispatch(updateReportedCaseSuccess(updatedCase))
     history.push('/report-case-list');
 

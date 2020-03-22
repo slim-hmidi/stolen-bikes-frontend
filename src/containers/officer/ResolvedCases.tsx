@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import MaterialTable, { Column } from 'material-table';
-import { resolvedCases } from "../../api/reportedCasesApi";
+import { resolvedCasesApi } from "../../api/reportedCasesApi";
 import TableIcons from "../../common/TableIcons";
 
 import {
@@ -20,7 +20,7 @@ interface Row {
 
 const ResolvedCasesList = () => {
   const dispatch = useDispatch();
-  const { officerId } = useSelector((state: AppState) => state.affectedCasesReducer)
+  const { officerId } = useSelector((state: AppState) => state.officerCasesReducer, shallowEqual)
   const [data, setData] = useState<Row[]>([]);
   const columns: Column<Row>[] = [
     { title: 'Name', field: 'name' },
@@ -32,7 +32,7 @@ const ResolvedCasesList = () => {
     async function getReportedCasesList() {
       try {
         dispatch(startFetch())
-        const resolvedCasesList: Row[] = await resolvedCases(officerId);
+        const resolvedCasesList: Row[] = await resolvedCasesApi(officerId);
         dispatch(fetchResolvedCasesSuccess(resolvedCasesList))
         const tableData = resolvedCasesList.map(c => ({ ...c }))
         setData(tableData);

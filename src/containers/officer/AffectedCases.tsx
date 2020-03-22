@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import MaterialTable, { Column } from 'material-table';
-import { affectedCases } from "../../api/reportedCasesApi";
+import { affectedCasesApi } from "../../api/reportedCasesApi";
 import TableIcons from "../../common/TableIcons";
-
+import { updateAffectedCaseRequest } from "../../redux/reducers/officerCases.reducers";
 import {
   startFetch,
   fetchAffectedCasesSuccess,
@@ -13,28 +13,30 @@ import {
 import { AppState } from "../../redux/reducers/rootReducer";
 
 interface Row {
+  caseId: number;
   name: string;
   email: string;
   bikeFrameNumber: number;
-  caseResolved: boolean;
+  caseResolved: number;
 }
 
 const ResolvedCasesList = () => {
   const dispatch = useDispatch();
-  const { officerId } = useSelector((state: AppState) => state.affectedCasesReducer)
+  const { officerId } = useSelector((state: AppState) => state.officerCasesReducer, shallowEqual)
   const [data, setData] = useState<Row[]>([]);
   const columns: Column<Row>[] = [
-    { title: 'Name', field: 'name' },
-    { title: 'Email', field: 'email' },
-    { title: 'Bike Frame Number', field: 'bikeFrameNumber', type: 'numeric' },
-    { title: 'Case Resolved', field: 'caseResolved', lookup: { true: true, false: false } }
+    { title: 'Case Id', field: 'caseId', type: 'numeric', editable: 'never' },
+    { title: 'Name', field: 'name', editable: 'never' },
+    { title: 'Email', field: 'email', editable: 'never' },
+    { title: 'Bike Frame Number', field: 'bikeFrameNumber', type: 'numeric', editable: 'never' },
+    { title: 'Case Resolved', field: 'caseResolved', lookup: { 1: 'true', 0: 'false' } }
   ];
 
   useEffect(() => {
     async function getReportedCasesList() {
       try {
         dispatch(startFetch())
-        const affectedCasesList: Row[] = await affectedCases(officerId);
+        const affectedCasesList: Row[] = await affectedCasesApi(officerId);
         dispatch(fetchAffectedCasesSuccess(affectedCasesList))
         const tableData = affectedCasesList.map(c => ({ ...c }))
         setData(tableData);
@@ -54,6 +56,21 @@ const ResolvedCasesList = () => {
       icons={TableIcons}
       columns={columns}
       data={data}
+      editable={{
+        onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (newData.caseResolved) {
+              dispatch(updateAffectedCaseRequest({
+                officerId,
+                caseId: newData.caseId
+              }))
+              // data[data.indexOf(oldData)] = newData;
+              // setData(data);
+            }
+            resolve()
+          }, 1000)
+        }),
+      }}
       options={{
         showTitle: false,
         rowStyle: {

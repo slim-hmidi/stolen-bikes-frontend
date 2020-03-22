@@ -15,16 +15,22 @@ export interface ReportedCase {
 }
 
 export interface AffectedCase {
+  caseId: number;
   name: string;
   email: string;
   bikeFrameNumber: number;
-  caseResolved: boolean;
+  caseResolved: number;
+}
+
+export interface CaseToUpdate {
+  caseId: number;
+  officerId: number;
 }
 
 
 
 
-export async function reportNewCase(newCase: Case) {
+export async function reportNewCaseApi(newCase: Case) {
   const reportedCase = await axios.post<ReportedCase>('/reported_cases', {
     name: newCase.name,
     email: newCase.email,
@@ -34,29 +40,39 @@ export async function reportNewCase(newCase: Case) {
   return reportedCase.data;
 }
 
-export async function fetchReportedCases(username: string): Promise<ReportedCase[]> {
+export async function fetchReportedCasesApi(username: string): Promise<ReportedCase[]> {
   const reportedCaseList = await axios.get(`/reported_cases?name=${username}`);
   const { data } = reportedCaseList
   return data.result;
 
 }
 
-export async function deleteReportCase(id: number): Promise<ReportedCase> {
+export async function deleteReportCaseApi(id: number): Promise<ReportedCase> {
   const { data } = await axios.delete(`/reported_cases/${id}`);
   return data.result;
 }
 
-export async function updateReportCase(caseToUpdate: ReportedCase): Promise<ReportedCase> {
+export async function updateReportCaseApi(caseToUpdate: ReportedCase): Promise<ReportedCase> {
   const { data } = await axios.patch(`/reported_cases/${caseToUpdate.id}`, caseToUpdate);
   return data.result;
 }
 
-export async function resolvedCases(officerId: number): Promise<Case[]> {
+export async function resolvedCasesApi(officerId: number): Promise<Case[]> {
   const { data } = await axios.get(`/resolved_cases/${officerId}`);
   return data.result;
 }
 
-export async function affectedCases(officerId: number): Promise<AffectedCase[]> {
+export async function affectedCasesApi(officerId: number): Promise<AffectedCase[]> {
   const { data } = await axios.get(`/affected_cases/${officerId}`);
   return data.result;
+}
+
+export async function resolveCaseApi(affectedCaseToUpdate: CaseToUpdate): Promise<number> {
+  const { officerId, caseId } = affectedCaseToUpdate;
+  const { data } = await axios.patch(`/resolved_cases/${officerId}`, {
+    reportedCaseId: caseId
+  })
+
+  return data.result;
+
 }
