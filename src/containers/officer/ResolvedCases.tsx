@@ -13,6 +13,7 @@ import {
 import { AppState } from "../../redux/reducers/rootReducer";
 
 interface Row {
+  caseId: number;
   name: string;
   email: string;
   bikeFrameNumber: number;
@@ -23,6 +24,7 @@ const ResolvedCasesList = () => {
   const { officerId } = useSelector((state: AppState) => state.officerCasesReducer, shallowEqual)
   const [data, setData] = useState<Row[]>([]);
   const columns: Column<Row>[] = [
+    { title: 'Case Id', field: 'caseId', type: 'numeric' },
     { title: 'Name', field: 'name' },
     { title: 'Email', field: 'email' },
     { title: 'Bike Frame Number', field: 'bikeFrameNumber', type: 'numeric' },

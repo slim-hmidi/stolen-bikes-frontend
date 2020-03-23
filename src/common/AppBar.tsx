@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -56,6 +56,7 @@ function LogOut({ handleLogout }: { handleLogout: IProps["handleLogout"] }) {
 export default function PrimarySearchAppBar(props: IProps) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [notifcations, setNotifications] = useState<string[]>([])
   const { label, handleLogout } = props;
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -82,6 +83,13 @@ export default function PrimarySearchAppBar(props: IProps) {
   const handleDrawerOpen = () => {
     setOpen(true)
   }
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:9090");
+    ws.onmessage = (event: MessageEvent) => {
+      setNotifications(notifications => notifications.concat(event.data))
+    };
+  }, [])
 
 
 
@@ -131,7 +139,7 @@ export default function PrimarySearchAppBar(props: IProps) {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {label === "user" ? <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="primary">
+              <Badge badgeContent={notifcations.length} color="primary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

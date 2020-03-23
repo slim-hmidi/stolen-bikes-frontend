@@ -64,11 +64,13 @@ const ResolvedCasesList = () => {
                 officerId,
                 caseId: newData.caseId
               }))
-              // data[data.indexOf(oldData)] = newData;
-              // setData(data);
+              const index = data.indexOf(newData);
+              data.splice(index, 1);
+              setData(data);
+              resolve();
             }
-            resolve()
-          }, 1000)
+            resolve();
+          }, 600)
         }),
       }}
       options={{

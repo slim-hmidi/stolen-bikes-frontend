@@ -1,5 +1,12 @@
 import axios from 'axios';
 
+export interface ResolvedCase {
+  caseId: number;
+  name: string;
+  email: string;
+  bikeFrameNumber: number;
+}
+
 export interface Case {
   name: string;
   email: string;
@@ -57,7 +64,7 @@ export async function updateReportCaseApi(caseToUpdate: ReportedCase): Promise<R
   return data.result;
 }
 
-export async function resolvedCasesApi(officerId: number): Promise<Case[]> {
+export async function resolvedCasesApi(officerId: number): Promise<ResolvedCase[]> {
   const { data } = await axios.get(`/resolved_cases/${officerId}`);
   return data.result;
 }
