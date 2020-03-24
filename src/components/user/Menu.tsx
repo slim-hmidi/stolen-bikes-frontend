@@ -10,7 +10,27 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core";
 const styles = makeStyles((theme: Theme) => createStyles({
   item: {
     marginBottom: theme.spacing(4),
+    [theme.breakpoints.down(600)]: {
+      fontSize: '80%'
+    },
+    [theme.breakpoints.down(500)]: {
+      fontSize: '60%'
+    },
+    [theme.breakpoints.down(400)]: {
+      fontSize: '50%'
+    }
   },
+  button: {
+    [theme.breakpoints.down(600)]: {
+      fontSize: '100%'
+    },
+    [theme.breakpoints.down(500)]: {
+      fontSize: '100%'
+    },
+    [theme.breakpoints.down(400)]: {
+      fontSize: '100%'
+    }
+  }
 }))
 
 const UserMenu = () => {
@@ -29,11 +49,23 @@ const UserMenu = () => {
     <div>
       <CssBaseline />
       <AppBar label="user" handleLogout={handleLogout} />
-      <Grid container direction="column" alignItems="center" justify="center" style={{ height: "50vh" }}>
-        <Grid item className={classes.item}>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{
+          flexWrap: 'nowrap',
+          height: "50vh"
+        }}>
+        <Grid
+          item
+          className={classes.item}>
           <h1 className="welcome-msg" onAnimationEnd={handleAnimationEnd}>Welcome to user homepage</h1>
         </Grid>
-        <Grid item className={classes.item}>
+        <Grid
+          item
+          className={classes.item}>
           {
             !!hiddenButton ? null
               :
@@ -41,6 +73,7 @@ const UserMenu = () => {
                 variant="contained"
                 color="secondary"
                 onClick={handleReportCase}
+                className={classes.button}
               >Report Case</Button>
           }
         </Grid>
