@@ -1,9 +1,9 @@
 export interface Data {
-  id: number;
+  caseId: number;
   name: string;
   email: string;
   bikeFrameNumber: number;
-  caseResolved: boolean;
+  caseResolved: boolean | number;
 }
 
 export type Order = "asc" | "desc";

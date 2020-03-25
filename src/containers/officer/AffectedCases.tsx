@@ -17,7 +17,7 @@ interface Row {
   name: string;
   email: string;
   bikeFrameNumber: number;
-  caseResolved: number;
+  caseResolved: number | boolean;
 }
 
 const ResolvedCasesList = () => {

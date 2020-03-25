@@ -6,5 +6,5 @@ const reportedCases = (state: AppState) => state.reportedCaseReducer.reportedCas
 
 export const selectedReportedCase = (id: number) => createSelector(
   [reportedCases],
-  cases => cases.find(c => c.id === id)
+  cases => cases.find(c => c.caseId === id)
 )

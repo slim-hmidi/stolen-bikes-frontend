@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { Case, AffectedCase, resolveCaseApi, CaseToUpdate } from "../../api/reportedCasesApi";
+import { NewCase, ReturnedCase, resolveCaseApi, AffectedCaseToUpdate } from "../../api/reportedCasesApi";
 
 interface CasesState {
   officerId: number;
   loading: boolean;
-  resolvedCases: Case[];
-  affectedCases: AffectedCase[];
+  resolvedCases: NewCase[];
+  affectedCases: ReturnedCase[];
   error: string | null;
 }
 const initialState: CasesState = {
@@ -28,11 +28,11 @@ const cases = createSlice({
     startFetch: (state) => {
       state.loading = true
     },
-    fetchResolvedCasesSuccess: (state, action: PayloadAction<Case[]>) => {
+    fetchResolvedCasesSuccess: (state, action: PayloadAction<NewCase[]>) => {
       state.resolvedCases = action.payload;
       state.loading = false;
     },
-    fetchAffectedCasesSuccess: (state, action: PayloadAction<AffectedCase[]>) => {
+    fetchAffectedCasesSuccess: (state, action: PayloadAction<ReturnedCase[]>) => {
       state.affectedCases = action.payload;
       state.loading = false;
     },
@@ -68,7 +68,7 @@ export const {
 export default cases.reducer;
 
 
-export const updateAffectedCaseRequest = (caseToUpdate: CaseToUpdate): AppThunk => async dispatch => {
+export const updateAffectedCaseRequest = (caseToUpdate: AffectedCaseToUpdate): AppThunk => async dispatch => {
   try {
     dispatch(officerCaseStart());
     const updatedCaseId = await resolveCaseApi(caseToUpdate);

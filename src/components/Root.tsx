@@ -4,8 +4,7 @@ import App from "./App";
 import OfficerMenu from "./officer/Menu";
 import UserMenu from "./user/Menu";
 import ReportCase from "../containers/user/ReportCase";
-import UpdateCase from "../containers/user/UpdateCase"
-import ReportCaseList from "../containers/user/ReportCaseList";
+import ReportedCases from "../containers/user/ReportedCases";
 import NoMatch from "./NoMatch";
 import history from "../history/history";
 
@@ -14,11 +13,10 @@ const Root = () => {
     <Router history={history}>
       <Switch>
         <Route exact path='/' component={App} />
-        <Route exact path="/update-case/:reportCaseId" component={UpdateCase} />
         <Route path="/user-menu" component={UserMenu} />
         <Route path="/officer-menu" component={OfficerMenu} />
         <Route path="/report-case" component={ReportCase} />
-        <Route path="/report-case-list" component={ReportCaseList} />
+        <Route path="/report-case-list" component={ReportedCases} />
         <Route path='*' component={NoMatch} />
       </Switch>
     </Router>

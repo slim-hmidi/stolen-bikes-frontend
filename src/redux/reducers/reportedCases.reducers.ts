@@ -1,6 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { reportNewCaseApi, Case, ReportedCase, deleteReportCaseApi, updateReportCaseApi } from "../../api/reportedCasesApi";
+import {
+  reportNewCaseApi,
+  NewCase,
+  ReportedCaseToUpdate,
+  deleteReportCaseApi,
+  updateReportCaseApi,
+  ReturnedCase
+} from "../../api/reportedCasesApi";
 import history from "../../history/history";
 
 
@@ -8,7 +15,7 @@ import history from "../../history/history";
 interface ReportedCasesState {
   username: string;
   loading: boolean;
-  reportedCases: ReportedCase[];
+  reportedCases: ReturnedCase[];
   error: string | null;
 }
 
@@ -25,7 +32,7 @@ const reportedCases = createSlice({
     caseStart: (state) => {
       state.error = null;
     },
-    reportCaseSuccess: (state, action: PayloadAction<ReportedCase>) => {
+    reportCaseSuccess: (state, action: PayloadAction<ReturnedCase>) => {
       state.reportedCases.push(action.payload)
     },
     caseError: (state, action: PayloadAction<string>) => {
@@ -34,7 +41,7 @@ const reportedCases = createSlice({
     fetchReportedCasesStart: (state) => {
       state.loading = true;
     },
-    fetchReportCasesSuccess: (state, action: PayloadAction<ReportedCase[]>) => {
+    fetchReportCasesSuccess: (state, action: PayloadAction<ReturnedCase[]>) => {
       state.reportedCases = action.payload;
       state.loading = false;
 
@@ -44,12 +51,12 @@ const reportedCases = createSlice({
       state.loading = false;
     },
     deletedReportedCaseSuccess: (state, action: PayloadAction<number>) => {
-      state.reportedCases = state.reportedCases.filter(c => c.id !== action.payload);
+      state.reportedCases = state.reportedCases.filter(c => c.caseId !== action.payload);
     },
-    updateReportedCaseSuccess: (state, action: PayloadAction<ReportedCase>) => {
+    updateReportedCaseSuccess: (state, action: PayloadAction<ReturnedCase>) => {
       state.reportedCases = state.reportedCases.map(c => {
 
-        if (c.id === action.payload.id) {
+        if (c.caseId === action.payload.caseId) {
           c = action.payload;
         }
         return c;
@@ -69,7 +76,7 @@ export const { caseStart,
 
 export default reportedCases.reducer;
 
-export const reportCaseRequest = (newCase: Case): AppThunk => async dispatch => {
+export const reportCaseRequest = (newCase: NewCase): AppThunk => async dispatch => {
   try {
     dispatch(caseStart());
     const reportedCase = await reportNewCaseApi(newCase);
@@ -89,7 +96,7 @@ export const deleteCaseRequest = (id: number): AppThunk => async dispatch => {
   try {
     dispatch(caseStart());
     const deletedReportedCase = await deleteReportCaseApi(id);
-    dispatch(deletedReportedCaseSuccess(deletedReportedCase.id))
+    dispatch(deletedReportedCaseSuccess(deletedReportedCase.caseId))
 
   } catch (error) {
     let errorMessage = "Internal Server Error";
@@ -100,7 +107,7 @@ export const deleteCaseRequest = (id: number): AppThunk => async dispatch => {
   }
 }
 
-export const updateCaseRequest = (caseToUpdate: ReportedCase): AppThunk => async dispatch => {
+export const updateCaseRequest = (caseToUpdate: ReportedCaseToUpdate): AppThunk => async dispatch => {
   try {
     dispatch(caseStart());
     const updatedCase = await updateReportCaseApi(caseToUpdate);

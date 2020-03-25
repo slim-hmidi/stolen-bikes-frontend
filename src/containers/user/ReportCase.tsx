@@ -4,7 +4,7 @@ import ReportCaseForm from "./ReportCaseForm";
 import { AppState } from "../../redux/reducers/rootReducer";
 import SnackBar from "../../common/SnackBar";
 
-const ReportCase = (props: any) => {
+const ReportCase = () => {
   const { error } = useSelector((state: AppState) => state.reportedCaseReducer, shallowEqual);
   const [open, setOpen] = useState(!!error)
   useEffect(() => {
