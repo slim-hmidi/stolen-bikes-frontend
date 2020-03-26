@@ -21,7 +21,7 @@ export interface NewCase {
 }
 
 export interface ReturnedCase extends BasicResult {
-  caseResolved: boolean | number;
+  caseResolved: number;
 }
 
 export type ReportedCaseToUpdate = {

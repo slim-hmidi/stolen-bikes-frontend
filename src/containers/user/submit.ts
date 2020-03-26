@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { reportCaseRequest, updateCaseRequest } from "../../redux/reducers/reportedCases.reducers";
+import { reportCaseRequest } from "../../redux/reducers/reportedCases.reducers";
 
 
 export interface IValues {

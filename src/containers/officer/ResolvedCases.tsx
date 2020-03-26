@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import MaterialTable, { Column } from 'material-table';
-import { resolvedCasesApi } from "../../api/reportedCasesApi";
 import TableIcons from "../../common/TableIcons";
 
 import {
-  startFetch,
-  fetchResolvedCasesSuccess,
-  fetchError
+  fetchResolvedCasesRequest
 } from "../../redux/reducers/officerCases.reducers";
 
 import { AppState } from "../../redux/reducers/rootReducer";
@@ -21,8 +18,12 @@ interface Row {
 
 const ResolvedCasesList = () => {
   const dispatch = useDispatch();
-  const { officerId } = useSelector((state: AppState) => state.officerCasesReducer, shallowEqual)
-  const [data, setData] = useState<Row[]>([]);
+  const { officerId, resolvedCases } = useSelector((state: AppState) => ({
+    officerId: state.officerCasesReducer.officerId,
+    resolvedCases: state.officerCasesReducer.resolvedCases
+  }), shallowEqual);
+
+  const data = resolvedCases.map(c => ({ ...c }));
   const columns: Column<Row>[] = [
     { title: 'Case Id', field: 'caseId', type: 'numeric' },
     { title: 'Name', field: 'name' },
@@ -31,22 +32,7 @@ const ResolvedCasesList = () => {
   ];
 
   useEffect(() => {
-    async function getReportedCasesList() {
-      try {
-        dispatch(startFetch())
-        const resolvedCasesList: Row[] = await resolvedCasesApi(officerId);
-        dispatch(fetchResolvedCasesSuccess(resolvedCasesList))
-        const tableData = resolvedCasesList.map(c => ({ ...c }))
-        setData(tableData);
-      } catch (error) {
-        let errorMessage = "Internal Server Error";
-        if (error.response) {
-          errorMessage = error.response.data.message;
-        }
-        dispatch(fetchError(errorMessage))
-      }
-    }
-    getReportedCasesList()
+    dispatch(fetchResolvedCasesRequest(officerId))
   }, [officerId, dispatch])
 
   return (

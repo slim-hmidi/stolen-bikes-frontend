@@ -1,11 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { NewCase, ReturnedCase, resolveCaseApi, AffectedCaseToUpdate } from "../../api/reportedCasesApi";
+import {
+  BasicResult,
+  ReturnedCase,
+  resolveCaseApi,
+  AffectedCaseToUpdate,
+  affectedCasesApi,
+  resolvedCasesApi
+} from "../../api/reportedCasesApi";
 
 interface CasesState {
   officerId: number;
   loading: boolean;
-  resolvedCases: NewCase[];
+  resolvedCases: BasicResult[];
   affectedCases: ReturnedCase[];
   error: string | null;
 }
@@ -25,19 +32,18 @@ const cases = createSlice({
     officerCaseStart: (state) => {
       state.error = null;
     },
-    startFetch: (state) => {
+    startAffectedCasesFetch: (state) => {
       state.loading = true
     },
-    fetchResolvedCasesSuccess: (state, action: PayloadAction<NewCase[]>) => {
+    startResolvedCasesFetch: (state) => {
+      state.loading = true
+    },
+    fetchResolvedCasesSuccess: (state, action: PayloadAction<BasicResult[]>) => {
       state.resolvedCases = action.payload;
       state.loading = false;
     },
     fetchAffectedCasesSuccess: (state, action: PayloadAction<ReturnedCase[]>) => {
       state.affectedCases = action.payload;
-      state.loading = false;
-    },
-    fetchError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
       state.loading = false;
     },
     resolveAffectedCaseSuccess: (state, action: PayloadAction<number>) => {
@@ -48,20 +54,30 @@ const cases = createSlice({
         return c;
       })
     },
-    officerCaseError: (state, action: PayloadAction<string>) => {
+    updateAffectedCaseError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
+    },
+    fetchAffectedCaseError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    fetchResolvedCaseError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
     }
   }
 })
 
 export const {
   officerCaseStart,
-  startFetch,
+  startAffectedCasesFetch,
+  startResolvedCasesFetch,
   fetchResolvedCasesSuccess,
   fetchAffectedCasesSuccess,
-  fetchError,
   resolveAffectedCaseSuccess,
-  officerCaseError,
+  fetchAffectedCaseError,
+  fetchResolvedCaseError,
+  updateAffectedCaseError
 } = cases.actions
 
 
@@ -79,6 +95,34 @@ export const updateAffectedCaseRequest = (caseToUpdate: AffectedCaseToUpdate): A
     if (error.response) {
       errorMessage = error.response.data.message;
     }
-    dispatch(officerCaseError(errorMessage))
+    dispatch(updateAffectedCaseError(errorMessage))
+  }
+}
+
+export const fetchAffectedCasesRequest = (officerId: number): AppThunk => async dispatch => {
+  try {
+    dispatch(startAffectedCasesFetch())
+    const affectedCasesList = await affectedCasesApi(officerId);
+    dispatch(fetchAffectedCasesSuccess(affectedCasesList))
+  } catch (error) {
+    let errorMessage = "Internal Server Error";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    }
+    dispatch(fetchAffectedCaseError(errorMessage))
+  }
+}
+
+export const fetchResolvedCasesRequest = (officerId: number): AppThunk => async dispatch => {
+  try {
+    dispatch(startResolvedCasesFetch())
+    const resolvedCasesList = await resolvedCasesApi(officerId);
+    dispatch(fetchResolvedCasesSuccess(resolvedCasesList));
+  } catch (error) {
+    let errorMessage = "Internal Server Error";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    }
+    dispatch(fetchResolvedCaseError(errorMessage))
   }
 }

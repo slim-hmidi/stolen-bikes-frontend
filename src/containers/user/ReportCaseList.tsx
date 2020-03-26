@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useHistory } from "react-router-dom";
 import MaterialTable, { Column } from 'material-table';
@@ -7,15 +7,11 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import HomeIcon from "@material-ui/icons/Home";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import CircularLoading from "../../common/Progress";
-import { fetchReportedCasesApi } from "../../api/reportedCasesApi";
 import TableIcons from "../../common/TableIcons";
 import {
-  fetchReportedCasesStart,
-  fetchReportCasesSuccess,
-  fetchReportCasesError
-} from "../../redux/reducers/reportedCases.reducers";
-import {
+  fetchReportedCaseRequest,
   updateCaseRequest,
+  deleteCaseRequest
 } from "../../redux/reducers/reportedCases.reducers";
 
 import { AppState } from "../../redux/reducers/rootReducer";
@@ -51,12 +47,13 @@ const ResolvedCasesList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { username, loading } = useSelector((state: AppState) =>
+  const { username, loading, reportedCases } = useSelector((state: AppState) =>
     ({
       username: state.reportedCaseReducer.username,
-      loading: state.reportedCaseReducer.loading
+      loading: state.reportedCaseReducer.loading,
+      reportedCases: state.reportedCaseReducer.reportedCases
     }), shallowEqual);
-  const [data, setData] = useState<Row[]>([]);
+  const data = reportedCases.map(c => ({ ...c }));
   const columns: Column<Row>[] = [
     { title: 'CaseId', field: 'caseId', editable: 'never' },
     { title: 'Name', field: 'name', editable: 'never' },
@@ -77,23 +74,7 @@ const ResolvedCasesList = () => {
   }
 
   useEffect(() => {
-    async function getReportedCasesList() {
-      try {
-        dispatch(fetchReportedCasesStart())
-        const reportedCasesList = await fetchReportedCasesApi(username);
-        dispatch(fetchReportCasesSuccess(reportedCasesList))
-        const tableData: Row[] = reportedCasesList.map(c =>
-          Object.assign({}, c, { caseResolved: c.caseResolved ? 1 : 0 }));
-        setData(tableData);
-      } catch (error) {
-        let errorMessage = "Internal Server Error";
-        if (error.response) {
-          errorMessage = error.response.data.message;
-        }
-        dispatch(fetchReportCasesError(errorMessage))
-      }
-    }
-    getReportedCasesList()
+    dispatch(fetchReportedCaseRequest(username))
   }, [username, dispatch])
 
   return (
@@ -119,13 +100,21 @@ const ResolvedCasesList = () => {
               title="Reported Cases"
               editable={{
                 onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
-                  setTimeout(() => {
+                  setTimeout(async () => {
                     if (oldData) {
                       dispatch(updateCaseRequest(newData))
                       resolve();
                     }
-                  }, 600)
+                  }, 1000)
                 }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(async () => {
+                      dispatch(deleteCaseRequest(oldData.caseId))
+                      resolve();
+
+                    }, 1000);
+                  })
               }}
               options={{
                 rowStyle: {

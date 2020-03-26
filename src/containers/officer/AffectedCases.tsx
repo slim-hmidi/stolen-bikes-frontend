@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import MaterialTable, { Column } from 'material-table';
-import { affectedCasesApi } from "../../api/reportedCasesApi";
 import TableIcons from "../../common/TableIcons";
-import { updateAffectedCaseRequest } from "../../redux/reducers/officerCases.reducers";
 import {
-  startFetch,
-  fetchAffectedCasesSuccess,
-  fetchError
+  fetchAffectedCasesRequest,
+  updateAffectedCaseRequest
 } from "../../redux/reducers/officerCases.reducers";
 
 import { AppState } from "../../redux/reducers/rootReducer";
@@ -17,13 +14,14 @@ interface Row {
   name: string;
   email: string;
   bikeFrameNumber: number;
-  caseResolved: number | boolean;
+  caseResolved: number;
 }
 
-const ResolvedCasesList = () => {
+const AffectedCasesList = () => {
   const dispatch = useDispatch();
-  const { officerId } = useSelector((state: AppState) => state.officerCasesReducer, shallowEqual)
-  const [data, setData] = useState<Row[]>([]);
+  const states = useSelector((state: AppState) => state.officerCasesReducer, shallowEqual)
+  const { officerId, affectedCases } = states
+  const data = affectedCases.map(c => ({ ...c }));
   const columns: Column<Row>[] = [
     { title: 'Case Id', field: 'caseId', type: 'numeric', editable: 'never' },
     { title: 'Name', field: 'name', editable: 'never' },
@@ -33,22 +31,7 @@ const ResolvedCasesList = () => {
   ];
 
   useEffect(() => {
-    async function getReportedCasesList() {
-      try {
-        dispatch(startFetch())
-        const affectedCasesList: Row[] = await affectedCasesApi(officerId);
-        dispatch(fetchAffectedCasesSuccess(affectedCasesList))
-        const tableData = affectedCasesList.map(c => ({ ...c }))
-        setData(tableData);
-      } catch (error) {
-        let errorMessage = "Internal Server Error";
-        if (error.response) {
-          errorMessage = error.response.data.message;
-        }
-        dispatch(fetchError(errorMessage))
-      }
-    }
-    getReportedCasesList()
+    dispatch(fetchAffectedCasesRequest(officerId))
   }, [officerId, dispatch])
 
   return (
@@ -61,16 +44,12 @@ const ResolvedCasesList = () => {
           setTimeout(() => {
             if (newData.caseResolved) {
               dispatch(updateAffectedCaseRequest({
-                officerId,
-                caseId: newData.caseId
+                caseId: newData.caseId,
+                officerId
               }))
-              const index = data.indexOf(newData);
-              data.splice(index, 1);
-              setData(data);
               resolve();
             }
-            resolve();
-          }, 600)
+          }, 1000)
         }),
       }}
       options={{
@@ -87,4 +66,4 @@ const ResolvedCasesList = () => {
   );
 }
 
-export default ResolvedCasesList;
+export default AffectedCasesList;

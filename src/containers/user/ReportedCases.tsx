@@ -6,7 +6,9 @@ import SnackBar from "../../common/SnackBar";
 
 
 const ReportedCases = () => {
-  const { error } = useSelector((state: AppState) => state.reportedCaseReducer, shallowEqual);
+  const { error } = useSelector((state: AppState) => ({
+    error: state.reportedCaseReducer.error
+  }), shallowEqual);
   const [open, setOpen] = useState(!!error)
   useEffect(() => {
     setOpen(!!error);
