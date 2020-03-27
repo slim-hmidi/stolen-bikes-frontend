@@ -12,9 +12,9 @@ import {
   fetchReportedCaseRequest,
   updateCaseRequest,
   deleteCaseRequest
-} from "../../redux/reducers/reportedCases.reducers";
+} from "./reportedCasesSlice";
 
-import { AppState } from "../../redux/reducers/rootReducer";
+import { AppState } from "../../app/rootReducer";
 
 interface Row {
   caseId: number;
@@ -47,13 +47,13 @@ const ResolvedCasesList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { username, loading, reportedCases } = useSelector((state: AppState) =>
+  const { username, loading, cases } = useSelector((state: AppState) =>
     ({
-      username: state.reportedCaseReducer.username,
-      loading: state.reportedCaseReducer.loading,
-      reportedCases: state.reportedCaseReducer.reportedCases
+      username: state.reportedCases.username,
+      loading: state.reportedCases.loading,
+      cases: state.reportedCases.cases
     }), shallowEqual);
-  const data = reportedCases.map(c => ({ ...c }));
+  const data = cases.map(c => ({ ...c }));
   const columns: Column<Row>[] = [
     { title: 'CaseId', field: 'caseId', editable: 'never' },
     { title: 'Name', field: 'name', editable: 'never' },

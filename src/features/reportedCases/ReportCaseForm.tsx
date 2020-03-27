@@ -5,14 +5,14 @@ import Fab from "@material-ui/core/Fab"
 import HomeIcon from '@material-ui/icons/Home';
 import React from "react";
 import { Field } from "redux-form";
-import CardWrapper from "../../common/card/SimpleCard";
+import CardWrapper from "../../common/SimpleCard";
 import TextField from "../../common/TextFieldWrapper";
 import { useHistory } from "react-router-dom";
 import { CssBaseline } from "@material-ui/core";
 import { connect } from "react-redux";
 import { reduxForm } from "redux-form";
 import { submit, validate } from "./submit";
-import { AppState } from "../../redux/reducers/rootReducer";
+import { AppState } from "../../app/rootReducer";
 
 interface Props {
   pristine: boolean;
@@ -146,7 +146,7 @@ const ReportCase = reduxForm<any, any, any>({
 
 const ReportCaseForm = connect((state: AppState) => ({
   initialValues: {
-    name: state.reportedCaseReducer.username
+    name: state.reportedCases.username
   }
 }))(ReportCase)
 

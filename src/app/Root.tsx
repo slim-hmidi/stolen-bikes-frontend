@@ -1,11 +1,11 @@
 import React from "react";
 import { Router, Switch, Route } from "react-router-dom";
 import App from "./App";
-import OfficerMenu from "./officer/Menu";
-import UserMenu from "./user/Menu";
-import ReportCase from "../containers/user/ReportCase";
-import ReportedCases from "../containers/user/ReportedCases";
-import NoMatch from "./NoMatch";
+import OfficerMenu from "../components/OfficerMenu";
+import UserMenu from "../components/UserMenu";
+import ReportCase from "../features/reportedCases/ReportCase";
+import ReportedCases from "../features/reportedCases/ReportedCases";
+import NoMatch from "../components/NoMatch";
 import history from "../history/history";
 
 const Root = () => {

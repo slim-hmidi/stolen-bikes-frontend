@@ -5,9 +5,9 @@ import TableIcons from "../../common/TableIcons";
 
 import {
   fetchResolvedCasesRequest
-} from "../../redux/reducers/officerCases.reducers";
+} from "./resolvedCasesSlice";
 
-import { AppState } from "../../redux/reducers/rootReducer";
+import { AppState } from "../../app/rootReducer";
 
 interface Row {
   caseId: number;
@@ -18,12 +18,12 @@ interface Row {
 
 const ResolvedCasesList = () => {
   const dispatch = useDispatch();
-  const { officerId, resolvedCases } = useSelector((state: AppState) => ({
-    officerId: state.officerCasesReducer.officerId,
-    resolvedCases: state.officerCasesReducer.resolvedCases
+  const { officerId, cases } = useSelector((state: AppState) => ({
+    officerId: state.resolvedCases.officerId,
+    cases: state.resolvedCases.cases
   }), shallowEqual);
 
-  const data = resolvedCases.map(c => ({ ...c }));
+  const data = cases.map(c => ({ ...c }));
   const columns: Column<Row>[] = [
     { title: 'Case Id', field: 'caseId', type: 'numeric' },
     { title: 'Name', field: 'name' },

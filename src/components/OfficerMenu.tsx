@@ -1,10 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "../../common/AppBar";
-import ResolvedCasesList from "../../containers/officer/ResolvedCases";
-import AffectedCasesList from "../../containers/officer/AffectedCases";
-import ExpansionPanel from "../../common/ExpansionPanel";
+import AppBar from "../common/AppBar";
+import ResolvedCasesList from "../features/resolvedCases/ResolvedCases";
+import AffectedCasesList from "../features/affectedCases/AffectedCases";
+import ExpansionPanel from "../common/ExpansionPanel";
 
 
 

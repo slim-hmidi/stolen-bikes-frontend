@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from "react-redux";
-import ReportCaseForm from "./ReportCaseForm";
-import { AppState } from "../../redux/reducers/rootReducer";
+import { AppState } from "../../app/rootReducer";
+import ReportCaseList from "./ReportCaseList";
 import SnackBar from "../../common/SnackBar";
 
-const ReportCase = () => {
-  const { error } = useSelector((state: AppState) => state.reportedCaseReducer, shallowEqual);
+
+const ReportedCases = () => {
+  const { error } = useSelector((state: AppState) => ({
+    error: state.reportedCases.error
+  }), shallowEqual);
   const [open, setOpen] = useState(!!error)
   useEffect(() => {
     setOpen(!!error);
@@ -13,6 +16,7 @@ const ReportCase = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
   return (
     <div>
       <SnackBar open={open} handleClose={handleClose} severity="error" textMessage={error}
@@ -21,9 +25,9 @@ const ReportCase = () => {
             vertical: 'bottom',
             horizontal: 'left'
           }} />
-      <ReportCaseForm />
+      <ReportCaseList />
     </div>
   )
 }
 
-export default ReportCase;
+export default ReportedCases;

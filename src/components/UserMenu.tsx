@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import AppBar from "../../common/AppBar";
+import AppBar from "../common/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import './styles.css';
 import Grid from "@material-ui/core/Grid";

@@ -1,58 +1,42 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../store";
+import { AppThunk } from "../../app/store";
 import {
-  BasicResult,
   ReturnedCase,
   resolveCaseApi,
   AffectedCaseToUpdate,
   affectedCasesApi,
-  resolvedCasesApi
 } from "../../api/reportedCasesApi";
 
-interface CasesState {
+interface AffectedCasesState {
   officerId: number;
   loading: boolean;
-  resolvedCases: BasicResult[];
-  affectedCases: ReturnedCase[];
+  cases: ReturnedCase[];
   error: string | null;
 }
-const initialState: CasesState = {
+const initialState: AffectedCasesState = {
   officerId: 1,
   loading: false,
-  resolvedCases: [],
-  affectedCases: [],
+  cases: [],
   error: null
 }
 
 
-const cases = createSlice({
+const affectedCases = createSlice({
   name: 'affectedCase',
   initialState,
   reducers: {
-    officerCaseStart: (state) => {
+    updateAffectedCaseStart: (state) => {
       state.error = null;
     },
     startAffectedCasesFetch: (state) => {
       state.loading = true
     },
-    startResolvedCasesFetch: (state) => {
-      state.loading = true
-    },
-    fetchResolvedCasesSuccess: (state, action: PayloadAction<BasicResult[]>) => {
-      state.resolvedCases = action.payload;
-      state.loading = false;
-    },
     fetchAffectedCasesSuccess: (state, action: PayloadAction<ReturnedCase[]>) => {
-      state.affectedCases = action.payload;
+      state.cases = action.payload;
       state.loading = false;
     },
-    resolveAffectedCaseSuccess: (state, action: PayloadAction<number>) => {
-      state.affectedCases = state.affectedCases.filter(c => {
-        if (c.caseId === action.payload) {
-          c.caseResolved = 1
-        }
-        return c;
-      })
+    updateAffectedCaseSuccess: (state, action: PayloadAction<number>) => {
+      state.cases = state.cases.filter(c => c.caseId !== action.payload)
     },
     updateAffectedCaseError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -61,34 +45,27 @@ const cases = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    fetchResolvedCaseError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
-      state.loading = false;
-    }
   }
 })
 
 export const {
-  officerCaseStart,
+  updateAffectedCaseStart,
   startAffectedCasesFetch,
-  startResolvedCasesFetch,
-  fetchResolvedCasesSuccess,
   fetchAffectedCasesSuccess,
-  resolveAffectedCaseSuccess,
   fetchAffectedCaseError,
-  fetchResolvedCaseError,
+  updateAffectedCaseSuccess,
   updateAffectedCaseError
-} = cases.actions
+} = affectedCases.actions
 
 
-export default cases.reducer;
+export default affectedCases.reducer;
 
 
 export const updateAffectedCaseRequest = (caseToUpdate: AffectedCaseToUpdate): AppThunk => async dispatch => {
   try {
-    dispatch(officerCaseStart());
+    dispatch(updateAffectedCaseStart());
     const updatedCaseId = await resolveCaseApi(caseToUpdate);
-    dispatch(resolveAffectedCaseSuccess(updatedCaseId))
+    dispatch(updateAffectedCaseSuccess(updatedCaseId))
 
   } catch (error) {
     let errorMessage = "Internal Server Error";
@@ -110,19 +87,5 @@ export const fetchAffectedCasesRequest = (officerId: number): AppThunk => async 
       errorMessage = error.response.data.message;
     }
     dispatch(fetchAffectedCaseError(errorMessage))
-  }
-}
-
-export const fetchResolvedCasesRequest = (officerId: number): AppThunk => async dispatch => {
-  try {
-    dispatch(startResolvedCasesFetch())
-    const resolvedCasesList = await resolvedCasesApi(officerId);
-    dispatch(fetchResolvedCasesSuccess(resolvedCasesList));
-  } catch (error) {
-    let errorMessage = "Internal Server Error";
-    if (error.response) {
-      errorMessage = error.response.data.message;
-    }
-    dispatch(fetchResolvedCaseError(errorMessage))
   }
 }

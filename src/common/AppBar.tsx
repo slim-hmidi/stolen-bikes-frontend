@@ -60,7 +60,7 @@ interface IProps {
 }
 
 interface Notification {
-  caseId: number;
+  caseId: string;
   message: string;
 }
 function LogOut({ handleLogout }: { handleLogout: IProps["handleLogout"] }) {
@@ -111,7 +111,7 @@ export default function PrimarySearchAppBar(props: IProps) {
     setOpen(true)
   }
 
-  const deleteNotification = (id: number) => {
+  const deleteNotification = (id: string) => {
     const filtredNotifications = notifications.filter(n => n.caseId !== id);
     setNotifications(filtredNotifications);
   }

@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import store from "./app/store";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
 const render = () => {
-  const Main = require("./components/Main").default;
+  const Main = require("./app/Main").default;
   ReactDOM.render(
     <Provider store={store}>
       <Main />
@@ -17,7 +17,7 @@ const render = () => {
 render();
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept('./components/Main', render);
+  module.hot.accept('./app/Main', render);
 }
 
 

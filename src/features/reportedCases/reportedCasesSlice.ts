@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../store";
+import { AppThunk } from "../../app/store";
 import {
   reportNewCaseApi,
   NewCase,
@@ -16,14 +16,14 @@ import history from "../../history/history";
 interface ReportedCasesState {
   username: string;
   loading: boolean;
-  reportedCases: ReturnedCase[];
+  cases: ReturnedCase[];
   error: string | null;
 }
 
 const initialState: ReportedCasesState = {
   username: 'user',
   loading: false,
-  reportedCases: [],
+  cases: [],
   error: null
 }
 const reportedCases = createSlice({
@@ -34,7 +34,7 @@ const reportedCases = createSlice({
       state.error = null;
     },
     reportCaseSuccess: (state, action: PayloadAction<ReturnedCase>) => {
-      state.reportedCases.push(action.payload)
+      state.cases.push(action.payload)
     },
     fail: (state, action: PayloadAction<string>) => {
       state.error = action.payload
@@ -43,7 +43,7 @@ const reportedCases = createSlice({
       state.loading = true;
     },
     fetchReportCasesSuccess: (state, action: PayloadAction<ReturnedCase[]>) => {
-      state.reportedCases = action.payload;
+      state.cases = action.payload;
       state.loading = false;
 
     },
@@ -52,10 +52,10 @@ const reportedCases = createSlice({
       state.loading = false;
     },
     deletedReportedCaseSuccess: (state, action: PayloadAction<ReturnedCase>) => {
-      state.reportedCases = state.reportedCases.filter(c => c.caseId !== action.payload.caseId);
+      state.cases = state.cases.filter(c => c.caseId !== action.payload.caseId);
     },
     updateReportedCaseSuccess: (state, action: PayloadAction<ReturnedCase>) => {
-      state.reportedCases = state.reportedCases.map(c => {
+      state.cases = state.cases.map(c => {
 
         if (c.caseId === action.payload.caseId) {
           c = action.payload;
