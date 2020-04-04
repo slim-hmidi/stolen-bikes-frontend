@@ -23,8 +23,9 @@ const SnackBar = (props: Props) => {
     handleClose,
     textMessage,
     severity } = props;
-  return (<Snackbar open={open}
-    autoHideDuration={6000}
+  return (<Snackbar
+    open={open}
+    autoHideDuration={3000}
     onClose={handleClose}
     anchorOrigin={anchorOrigin}>
     <Alert onClose={handleClose} severity={severity}>

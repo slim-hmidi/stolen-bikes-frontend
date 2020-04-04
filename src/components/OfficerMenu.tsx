@@ -20,6 +20,7 @@ const UserMenu = () => {
   const [open, setOpen] = useState(!!error);
   useEffect(() => {
     setOpen(!!error);
+
   }, [error]);
 
   const handleLogout = () => {
@@ -33,7 +34,11 @@ const UserMenu = () => {
     <div>
       <CssBaseline />
       <AppBar label="officer" handleLogout={handleLogout} />
-      <SnackBar open={open} handleClose={handleClose} severity="error" textMessage={error}
+      <SnackBar
+        open={open}
+        handleClose={handleClose}
+        severity="error"
+        textMessage={error}
         anchorOrigin={
           {
             vertical: 'bottom',

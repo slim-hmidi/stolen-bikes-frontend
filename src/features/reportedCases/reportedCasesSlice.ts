@@ -134,9 +134,17 @@ const reportedCases = createSlice({
       state.loading = false;
     },
   },
-  reducers: {}
+  reducers: {
+    resetSnackBar: (state) => {
+      state.error = null;
+    }
+  }
 })
 
+
+export const {
+  resetSnackBar
+} = reportedCases.actions;
 
 
 export default reportedCases.reducer;
