@@ -3,8 +3,8 @@ import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import MaterialTable, { Column } from 'material-table';
 import TableIcons from "../../common/TableIcons";
 import {
-  fetchAffectedCasesRequest,
-  updateAffectedCaseRequest
+  fetchAffectedCases,
+  updateAffectedCase
 } from "./affectedCasesSlice";
 
 import { AppState } from "../../app/rootReducer";
@@ -30,7 +30,7 @@ const AffectedCasesList = () => {
   ];
 
   useEffect(() => {
-    dispatch(fetchAffectedCasesRequest(officerId))
+    dispatch(fetchAffectedCases(officerId))
   }, [officerId, dispatch])
 
   return (
@@ -42,7 +42,7 @@ const AffectedCasesList = () => {
         onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
           setTimeout(() => {
             if (newData.caseResolved) {
-              dispatch(updateAffectedCaseRequest({
+              dispatch(updateAffectedCase({
                 caseId: newData.caseId,
                 officerId
               }))

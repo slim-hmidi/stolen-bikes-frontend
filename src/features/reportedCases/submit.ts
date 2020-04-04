@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { reportCaseRequest } from "./reportedCasesSlice";
+import { reportCase } from "./reportedCasesSlice";
 
 
 export interface IValues {
@@ -46,7 +46,7 @@ const submit = (values: IValues, dispatch: Dispatch) => {
   };
 
 
-  return dispatch<any>(reportCaseRequest(newCase));
+  return dispatch<any>(reportCase(newCase));
 };
 
 

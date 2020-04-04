@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../../app/store";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   BasicResult,
   resolvedCasesApi
@@ -18,45 +17,38 @@ const initialState: ResolvedCasesState = {
   error: null
 }
 
+export const fetchResolvedCases = createAsyncThunk(
+  'resolvedCases/fetch',
+  async (officerId: number, { rejectWithValue }) => {
+    try {
+
+      const resolvedCasesList = await resolvedCasesApi(officerId);
+      return resolvedCasesList;
+    } catch (error) {
+      let errorMessage = "Internal Server Error";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 
 const resolvedCases = createSlice({
   name: 'resolvedCases',
   initialState,
-  reducers: {
-    startResolvedCasesFetch: (state) => {
-      state.loading = true
-    },
-    fetchResolvedCasesSuccess: (state, action: PayloadAction<BasicResult[]>) => {
+  extraReducers: {
+    [`${fetchResolvedCases.fulfilled}`]: (state, action: PayloadAction<BasicResult[]>) => {
       state.cases = action.payload;
       state.loading = false;
     },
-    fetchResolvedCaseError: (state, action: PayloadAction<string>) => {
+    [`${fetchResolvedCases.rejected}`]: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     }
-  }
+  },
+  reducers: {}
 })
 
-export const {
-  startResolvedCasesFetch,
-  fetchResolvedCasesSuccess,
-  fetchResolvedCaseError
-} = resolvedCases.actions
-
-
 export default resolvedCases.reducer;
-
-
-export const fetchResolvedCasesRequest = (officerId: number): AppThunk => async dispatch => {
-  try {
-    dispatch(startResolvedCasesFetch())
-    const resolvedCasesList = await resolvedCasesApi(officerId);
-    dispatch(fetchResolvedCasesSuccess(resolvedCasesList));
-  } catch (error) {
-    let errorMessage = "Internal Server Error";
-    if (error.response) {
-      errorMessage = error.response.data.message;
-    }
-    dispatch(fetchResolvedCaseError(errorMessage))
-  }
-}

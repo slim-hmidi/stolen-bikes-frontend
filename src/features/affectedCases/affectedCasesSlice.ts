@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../../app/store";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   ReturnedCase,
   resolveCaseApi,
@@ -20,72 +19,61 @@ const initialState: AffectedCasesState = {
   error: null
 }
 
+export const updateAffectedCase = createAsyncThunk(
+  'affectedCases/update',
+  async (caseToUpdate: AffectedCaseToUpdate, { rejectWithValue }) => {
+    try {
+      const updatedCaseId = await resolveCaseApi(caseToUpdate);
+      return updatedCaseId;
+    } catch (error) {
+      let errorMessage = "Internal Server Error";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+)
+
+export const fetchAffectedCases = createAsyncThunk(
+  'affectedCases/fetch',
+  async (officerId: number, { rejectWithValue }) => {
+    try {
+      const affectedCasesList = await affectedCasesApi(officerId);
+      return affectedCasesList;
+    } catch (error) {
+      let errorMessage = "Internal Server Error";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+)
+
 
 const affectedCases = createSlice({
   name: 'affectedCase',
   initialState,
-  reducers: {
-    updateAffectedCaseStart: (state) => {
-      state.error = null;
+  reducers: {},
+  extraReducers: {
+    [updateAffectedCase.fulfilled.toString()]: (state, action: PayloadAction<number>) => {
+      state.cases = state.cases.filter(c => c.caseId !== action.payload)
     },
-    startAffectedCasesFetch: (state) => {
-      state.loading = true
+    [`${updateAffectedCase.rejected}`]: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
     },
-    fetchAffectedCasesSuccess: (state, action: PayloadAction<ReturnedCase[]>) => {
+    [`${fetchAffectedCases.fulfilled}`]: (state, action: PayloadAction<ReturnedCase[]>) => {
       state.cases = action.payload;
       state.loading = false;
     },
-    updateAffectedCaseSuccess: (state, action: PayloadAction<number>) => {
-      state.cases = state.cases.filter(c => c.caseId !== action.payload)
-    },
-    updateAffectedCaseError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
-    },
-    fetchAffectedCaseError: (state, action: PayloadAction<string>) => {
+    [`${fetchAffectedCases.rejected}`]: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
-  }
+  },
 })
 
-export const {
-  updateAffectedCaseStart,
-  startAffectedCasesFetch,
-  fetchAffectedCasesSuccess,
-  fetchAffectedCaseError,
-  updateAffectedCaseSuccess,
-  updateAffectedCaseError
-} = affectedCases.actions
 
 
 export default affectedCases.reducer;
-
-
-export const updateAffectedCaseRequest = (caseToUpdate: AffectedCaseToUpdate): AppThunk => async dispatch => {
-  try {
-    dispatch(updateAffectedCaseStart());
-    const updatedCaseId = await resolveCaseApi(caseToUpdate);
-    dispatch(updateAffectedCaseSuccess(updatedCaseId))
-
-  } catch (error) {
-    let errorMessage = "Internal Server Error";
-    if (error.response) {
-      errorMessage = error.response.data.message;
-    }
-    dispatch(updateAffectedCaseError(errorMessage))
-  }
-}
-
-export const fetchAffectedCasesRequest = (officerId: number): AppThunk => async dispatch => {
-  try {
-    dispatch(startAffectedCasesFetch())
-    const affectedCasesList = await affectedCasesApi(officerId);
-    dispatch(fetchAffectedCasesSuccess(affectedCasesList))
-  } catch (error) {
-    let errorMessage = "Internal Server Error";
-    if (error.response) {
-      errorMessage = error.response.data.message;
-    }
-    dispatch(fetchAffectedCaseError(errorMessage))
-  }
-}

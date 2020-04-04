@@ -4,7 +4,7 @@ import MaterialTable, { Column } from 'material-table';
 import TableIcons from "../../common/TableIcons";
 
 import {
-  fetchResolvedCasesRequest
+  fetchResolvedCases
 } from "./resolvedCasesSlice";
 
 import { AppState } from "../../app/rootReducer";
@@ -32,7 +32,7 @@ const ResolvedCasesList = () => {
   ];
 
   useEffect(() => {
-    dispatch(fetchResolvedCasesRequest(officerId))
+    dispatch(fetchResolvedCases(officerId))
   }, [officerId, dispatch])
 
   return (

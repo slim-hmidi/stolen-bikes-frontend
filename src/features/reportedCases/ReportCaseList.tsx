@@ -9,9 +9,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import CircularLoading from "../../common/Progress";
 import TableIcons from "../../common/TableIcons";
 import {
-  fetchReportedCaseRequest,
-  updateCaseRequest,
-  deleteCaseRequest
+  fetchReportedCases,
+  updateReportedCase,
+  deleteReportedCase
 } from "./reportedCasesSlice";
 
 import { AppState } from "../../app/rootReducer";
@@ -74,7 +74,7 @@ const ResolvedCasesList = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchReportedCaseRequest(username))
+    dispatch(fetchReportedCases(username))
   }, [username, dispatch])
 
   return (
@@ -102,7 +102,7 @@ const ResolvedCasesList = () => {
                 onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
                   setTimeout(async () => {
                     if (oldData) {
-                      dispatch(updateCaseRequest(newData))
+                      dispatch(updateReportedCase(newData))
                       resolve();
                     }
                   }, 1000)
@@ -110,7 +110,7 @@ const ResolvedCasesList = () => {
                 onRowDelete: oldData =>
                   new Promise((resolve, reject) => {
                     setTimeout(async () => {
-                      dispatch(deleteCaseRequest(oldData.caseId))
+                      dispatch(deleteReportedCase(oldData.caseId))
                       resolve();
 
                     }, 1000);
