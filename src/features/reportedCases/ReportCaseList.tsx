@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { useHistory } from "react-router-dom";
 import MaterialTable, { Column } from 'material-table';
-import Fab from "@material-ui/core/Fab";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import HomeIcon from "@material-ui/icons/Home";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import CircularLoading from "../../common/Progress";
 import TableIcons from "../../common/TableIcons";
+import SpeedDialWrapper from "./SpeedDialWrapper";
 import {
   fetchReportedCases,
   updateReportedCase,
@@ -30,9 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
     },
     homeIcon: {
-      right: 4,
-      bottom: 4,
-      position: "absolute"
+      position: "absolute",
+      bottom: theme.spacing(1),
+      right: theme.spacing(1),
     },
     progress: {
       position: 'fixed',
@@ -46,7 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const ResolvedCasesList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const history = useHistory();
   const { username, loading, cases } = useSelector((state: AppState) =>
     ({
       username: state.reportedCases.username,
@@ -69,10 +66,6 @@ const ResolvedCasesList = () => {
     }
   ];
 
-  const handleFabClick = () => {
-    history.push('/user-menu');
-  }
-
   useEffect(() => {
     dispatch(fetchReportedCases(username))
   }, [username, dispatch])
@@ -87,12 +80,9 @@ const ResolvedCasesList = () => {
           </div>
           :
           <div>
-            <Fab
-              className={classes.homeIcon}
-              color="secondary"
-              onClick={handleFabClick}>
-              <HomeIcon />
-            </Fab>
+            <div className={classes.homeIcon}>
+              <SpeedDialWrapper />
+            </div>
             <MaterialTable
               icons={TableIcons}
               columns={columns}
